@@ -1,0 +1,199 @@
+.RegisterPage {
+    background-color: rgb(73, 73, 73);
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    overflow: hidden;
+}
+
+
+.RegisterLeftImagePart {
+    width: 40%;
+    height: 100%;
+    background-color: pink;
+}
+
+.RegisterRightImagePart {
+    width: 60%;
+    height: 100%;
+    background-color: white;
+    /* border: 2px solid black; */
+}
+
+.RegisterRightImagePartHeading {
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    /* border: 2px solid brown; */
+    align-items: center;
+}
+
+.RegisterRightImagePartHeading>h2 {
+    border-bottom: 3px solid pink;
+}
+
+.RegisterFromContents{
+    height: calc(100% - 100px);
+    /* background-color: aqua; */
+    /* border: 2px solid green; */
+}
+
+/* Image Upload */
+
+.RegistrationImageUploadContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    /* border: 2px solid white; */
+    height: 150px;
+    justify-content: center;
+}
+
+.ProfileImageWrapper {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: black;
+    cursor: pointer;
+}
+
+.ProfileImageLabel {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.ProfileImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.ProfileImageInput {
+    display: none;
+}
+
+.UploadText {
+    font-size: 14px;
+    color: black;
+    /* cursor: pointer; */
+    text-align: center;
+}
+
+
+
+/* Registration Box */
+
+.RegistrationFormDetails {
+    height: calc((100vh - 250px)*65/100);
+    /* background-color: black; */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    /* border: 2px solid black; */
+}
+
+.RegistrationFormDataAndInputContainer {
+    /* border: 2px solid red; */
+    width: 370px;
+    display: flex;
+    justify-content: space-between;
+    height: 40px;
+    align-items: center;
+}
+
+.RegistrationFormDataAndInputContainer>input {
+    outline: none;
+    padding: 10px 10px;
+    border: 2px solid rgb(209, 209, 209);
+    border-radius: 6px;
+    color: black;
+    width: 60%;
+}
+.RegisterButtonAndTerms{
+    display: flex;
+    flex-direction: column;
+    /* justify-content: center; */
+    align-items: center;
+    /* border: 2px solid red; */
+    height: calc((100vh - 250px)*35/100);
+    gap: 10px;
+}
+.RegistrationErrorMessage{
+    color: red;
+    width: 370px;
+    text-align: center;
+    height: 15px;
+}
+.TermsandConditions{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.TermsandConditions>input{
+    cursor: pointer;
+}
+
+.RegisterButton {
+    background-color: #FF69B4;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 30px;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    width: 200px;
+}
+
+.RegisterButton:hover {
+    background-color: #ff68b9;
+    transform: scale(1.05);
+}
+
+.RegisterButton:focus {
+    outline: none;
+    box-shadow: 0 0 5px 2px rgba(255, 105, 180, 0.5);
+}
+
+.RegisterButton:active {
+    transform: scale(0.98);
+}
+
+@media only screen and (max-width: 800px) {
+    .RegisterLeftImagePart{
+        display: none;
+    }
+    .RegisterRightImagePart{
+        width: 100%;
+    }
+}
+@media only screen and (max-width: 420px) {
+    .RegisterLeftImagePart{
+        display: none;
+    }
+    .RegisterRightImagePart{
+        width: 100%;
+    }
+    .RegistrationErrorMessage{
+        width: 350px;
+    }
+    .RegistrationFormDataAndInputContainer{
+        width: 350px;
+    }
+}

@@ -4,6 +4,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import './index.css';
 import Homepage from './pages/Homepage/Homepage';
 import App from './App';
+import Register from './pages/LoginAndRegister/Register/Register';
 
 
 
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
       //   element: <Contact />
       // }
     ]
+  },
+  {
+    path: '/register',
+    element: <Register/>
   }
 ])
 
