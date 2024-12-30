@@ -8,6 +8,7 @@ import Register from './pages/LoginAndRegister/Register/Register';
 import Login from './pages/LoginAndRegister/Login/Login';
 import ForgotPassword from './pages/LoginAndRegister/ForgotPassword/ForgotPassword';
 import CoupleSpace from './pages/CoupleSpace/CoupleSpace';
+import Calendar from './pages/Calendar/Calendar';
 
 
 
@@ -47,6 +48,10 @@ const router = createBrowserRouter([
   {
     path: '/couplespace',
     element: <CoupleSpace/>
+  },
+  {
+    path: '/calendar',
+    element: <Calendar/>
   }
 ])
 
