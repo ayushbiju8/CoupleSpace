@@ -82,16 +82,15 @@ function Register() {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
-            });
+                withCredentials: true,
+            });            
             console.log(response.data);
             clearAll();
             navigate("/")
         } catch (error) {
             if (error.response && error.response.data) {
-                // Extract and display the error message
                 setError(error.response.data.message || 'An error occurred.');
             } else {
-                // Handle network or unexpected errors
                 setError('Unable to register. Please try again later.');
             }
             console.error('Problem With Registering User:', error);

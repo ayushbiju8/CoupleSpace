@@ -5,6 +5,8 @@ import './index.css';
 import Homepage from './pages/Homepage/Homepage';
 import App from './App';
 import Register from './pages/LoginAndRegister/Register/Register';
+import Login from './pages/LoginAndRegister/Login/Login';
+import ForgotPassword from './pages/LoginAndRegister/ForgotPassword/ForgotPassword';
 
 
 
@@ -32,6 +34,14 @@ const router = createBrowserRouter([
   {
     path: '/register',
     element: <Register/>
+  },
+  {
+    path: '/login',
+    element: <Login/>
+  },
+  {
+    path: '/forgot-password',
+    element: <ForgotPassword/>
   }
 ])
 

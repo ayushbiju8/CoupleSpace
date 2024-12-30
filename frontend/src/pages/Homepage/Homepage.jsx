@@ -8,6 +8,10 @@ import chat from '../../assets/homepage/e.jpg';
 import discover from '../../assets/homepage/discover.jpg';
 import profile from '../../assets/homepage/profile.jpg';
 import gift from '../../assets/homepage/gift.jpg';
+import React from 'react'
+import axios from "axios"
+import { useNavigate } from 'react-router-dom'
+
 
 function Homepage() {
   const [dropdownVisible, setDropdownVisible] = useState(false);
@@ -15,6 +19,21 @@ function Homepage() {
   const toggleDropdown = () => {
     setDropdownVisible((prev) => !prev);
   };
+
+  const navigate = useNavigate()
+  const logoutUser = async () => {
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/api/v1/users/logout", {}, {
+          withCredentials: true,
+        }
+      )
+      console.log(response);
+      navigate("/login")
+    } catch (error) {
+      console.error("Error Occured While Logging Out :" + error)
+    }
+  }
   return (
     <div className="homepage">
      <div className="navigationbarhomepage">
@@ -134,6 +153,9 @@ function Homepage() {
           </div>
         </div>
       </div>
+    <div>
+      Ayush
+      <button onClick={logoutUser}>Logout</button>
     </div>
   );
 }

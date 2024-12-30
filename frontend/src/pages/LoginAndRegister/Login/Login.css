@@ -1,0 +1,158 @@
+.LoginPage {
+    background-color: rgb(73, 73, 73);
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    overflow: hidden;
+}
+
+.LoginLeftImagePart {
+    width: 60%;
+    height: 100%;
+    background-color: pink;
+}
+
+.LoginRightImagePart {
+    width: 40%;
+    height: 100%;
+    background-color: white;
+}
+
+.LoginRightImagePartHeading {
+    height: 250px;
+    display: flex;
+    justify-content: center;
+    align-items:end;
+    /* border:  2px solid red; */
+}
+
+.LoginRightImagePartHeading > h2 {
+    border-bottom: 3px solid pink;
+}
+
+.LoginFromContents {
+    height: 40%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 50px;
+    /* border:  2px solid red; */
+}
+
+/* Login Form */
+
+.LoginFormDetails {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    gap: 15px;
+    width: 370px;
+    /* border: 2px solid red; */
+}
+
+.LoginFormDataAndInputContainer {
+    width: 370px;
+    display: flex;
+    justify-content: space-between;
+    height: 40px;
+    align-items: center;
+}
+
+.LoginFormDataAndInputContainer > h3 {
+    font-size: 16px;
+    color: #333;
+}
+
+.LoginFormDataAndInputContainer > input {
+    outline: none;
+    padding: 10px 10px;
+    border: 2px solid rgb(209, 209, 209);
+    border-radius: 6px;
+    color: black;
+    width: 60%;
+}
+
+/* Login Button */
+
+.LoginButtonAndTerms {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* gap: 20px; */
+    /* border: 2px solid red; */
+}
+
+.LoginButton {
+    background-color: #FF69B4;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 30px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    width: 200px;
+}
+
+.LoginButton:hover {
+    background-color: #ff68b9;
+    transform: scale(1.05);
+}
+
+.LoginButton:focus {
+    outline: none;
+    box-shadow: 0 0 5px 2px rgba(255, 105, 180, 0.5);
+}
+
+.LoginButton:active {
+    transform: scale(0.98);
+}
+
+/* Responsive Design */
+
+@media only screen and (max-width: 800px) {
+    .LoginLeftImagePart {
+        display: none;
+    }
+    .LoginRightImagePart {
+        width: 100%;
+    }
+}
+
+@media only screen and (max-width: 420px) {
+    .LoginLeftImagePart {
+        display: none;
+    }
+    .LoginRightImagePart {
+        width: 100%;
+    }
+    .LoginFormDataAndInputContainer{
+        width: 350px;
+    }
+}
+
+
+/* new */
+
+.LoginForgotPassword{
+    /* border: 2px solid red; */
+    width: 100%;
+    color: gray;
+    font-size: small;
+    display: flex;
+    align-items: center;
+    justify-content: end;
+}
+.LoginForgotPassword>h4{
+    cursor: pointer;
+}
+.LoginErrorMessage{
+    /* border: 2px solid red; */
+    color: red;
+    font-weight: 600;
+    height: 20px;
+    margin-top: 5px;
+}
