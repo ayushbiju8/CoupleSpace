@@ -7,6 +7,7 @@ import App from './App';
 import Register from './pages/LoginAndRegister/Register/Register';
 import Login from './pages/LoginAndRegister/Login/Login';
 import ForgotPassword from './pages/LoginAndRegister/ForgotPassword/ForgotPassword';
+import CoupleSpace from './pages/CoupleSpace/CoupleSpace';
 
 
 
@@ -42,6 +43,10 @@ const router = createBrowserRouter([
   {
     path: '/forgot-password',
     element: <ForgotPassword/>
+  },
+  {
+    path: '/couplespace',
+    element: <CoupleSpace/>
   }
 ])
 
