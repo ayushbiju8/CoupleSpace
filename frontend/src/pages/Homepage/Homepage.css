@@ -1,0 +1,391 @@
+/* General Reset */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  box-sizing: border-box;
+  background-color: var(--body-color);
+}
+
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+
+.homepage {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.navigationbarhomepage {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 15%;
+  background-color: var(--navigationbar-color);
+  padding: 0 20px;
+}
+
+.logoinhomepage h2 {
+  margin: 0;
+  color: white;
+  font-style: italic;
+  font-size: 30px;
+  
+}
+
+.searchbarinhomepage {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.searchform {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.searchinput {
+  width: 400px;
+  height: 50px;
+  padding: 8px 50px 8px 20px;
+  border: 1px solid white;
+  border-radius: 50px;
+  font-size: 1rem;
+  outline: none;
+}
+
+.searchlogo {
+  position: absolute;
+  top:10px;
+  right: 10px;
+  height: 30px;
+  width: 30px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.searchlogo img {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+
+}
+.dropdown-icon {
+  cursor: pointer;
+}
+
+/* Dropdown menu */
+.dropdown-menu {
+  z-index: 100;
+  display: none; /* Hidden by default */
+  position: absolute;
+  top: 100%; /* Position below the icon */
+  background-color: white;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  list-style:none;
+  padding: 0;
+  min-width: 150px;
+  left: 250px;
+  top:40px
+}
+
+/* Dropdown menu items */
+.dropdown-menu li {
+  padding: 10px;
+}
+.dropdown-menu.visible {
+  display: block; /* Show the dropdown */
+}
+
+.dropdown-menu li a {
+  text-decoration: none;
+  color: black;
+  display: block;
+}
+
+.dropdown-menu li:hover {
+  background-color: #f0f0f0;
+}
+
+/* Show the dropdown when hovered */
+.dropdown:hover .dropdown-menu {
+  display: block;
+}
+
+.bannerhomepage{
+  height: 30%;
+  overflow: hidden;
+  position: relative;
+
+}
+.couplebanner{
+  width: 100%;
+  position: absolute;
+  top: -340px;
+  clip-path: inset(0 0 50px 0);
+
+  
+
+}
+
+.contenthomepage {
+  flex: 1;
+  height: 71%;
+  display: flex;
+  flex-direction:row;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 40px;
+}
+.firstcontainerhomepage,
+.thirdcontainerhomepage {
+  width: 27%; /* Reduced width */
+  height: auto; /* Adjust height automatically */
+  padding: 20px; /* Reduced padding */
+
+  display: flex;
+  flex-direction: column;
+  align-items:flex-start;
+  justify-content: space-between;
+}
+
+.secondcontainerhomepage {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  width: 90%; /* Reduced width */
+  max-width: 400px; /* Reduced maximum width */
+  padding: 15px; /* Reduced padding */
+
+  border-radius: 8px; /* Reduced border radius */
+  justify-items: center;
+
+}
+
+.firstcontainerimage{
+  background-color: white; /* White background */
+  border-radius: 10px; /* Rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  padding: 15px; /* Padding for spacing inside the box */
+  margin: 10px; /* Space between boxes */
+  text-align: center; /* Center-align text and content */
+  display: flex;
+
+ 
+}
+
+
+
+
+
+.grid-item-image {
+  background-color: white; /* White background */
+  border-radius: 10px; /* Rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  padding: 15px; /* Padding for spacing inside the box */
+  margin: 10px; /* Space between boxes */
+  text-align: center; /* Center-align text and content */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  max-width: 160px; /* Minimum size */}
+
+  .alignatcenter {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center; /* Center-align text */
+  }
+  
+  
+a {
+  text-decoration: none; /* Global rule to remove underline from all links */
+}
+  .h2ofcontainerhomepage, .h2ofmiddlecontainerhomepage {
+    margin-top: 10px;
+    color: white;
+    background-color: var(--navigationbar-color);
+    border-radius: 50px;
+    padding: 5px 15px;
+    text-align: center;
+  }
+
+
+
+/* For screens between 1440px and 1024px */
+@media (min-width: 1024px) and (max-width: 1440px) {
+  .firstcontainerimage, .grid-item-image {
+    width: 95%; /* Slight reduction in size */
+    padding: 15px; /* Adjust padding */
+  }
+
+  .h2ofcontainerhomepage, .h2ofmiddlecontainerhomepage {
+    font-size: 90%; /* Slightly smaller font */
+    padding: 5px 10px;
+  }
+
+  .contenthomepage {
+    padding: 20px; /* Adjust content padding */
+  }
+}
+
+
+
+
+/* For screens between 425px and 375px */
+@media (max-width: 425px) {
+  
+  .searchinput {
+    width: 100%;
+    font-size: 1rem;
+  }
+
+  .firstcontainerimage, .grid-item-image {
+    padding: 8px; /* Minimal padding */
+  }
+
+  
+
+  .contenthomepage {
+    width: 0%;
+    flex-direction: column; /* Stack content */
+    align-items: center;
+    padding: 8px; /* Minimal padding */
+  }
+
+  .secondcontainerhomepage {
+    gap: 5px; /* Reduce gap */
+  }
+  
+.bannerhomepage {
+  height: 25%;
+  position: relative; /* Ensure it stays within flow */
+  margin-bottom: 20px; /* Add space below the banner */
+  z-index: 1; /* Ensure it doesn't overlap other sections */
+}
+
+.couplebanner {
+  width: 100%;
+  position: absolute;
+  top: 0; /* Adjust to fit within the banner */
+  clip-path: inset(0 0 50px 0); /* Optional if clipping is required */
+}
+
+/* Content homepage fixes */
+.contenthomepage {
+  flex-direction: column; /* Stack content */
+  align-items: center; /* Center horizontally */
+  justify-content: flex-start; /* Start below the banner */
+  padding: 20px 0; /* Add vertical padding */
+  margin-top: 20px; /* Ensure space between banner and content */
+  margin-left: -10px;
+}
+
+.firstcontainerhomepage,
+.thirdcontainerhomepage {
+  width: 0%; /* Optional: Adjust width */
+  max-width: 400px; /* Optional: Add a max-width */
+  margin: 0 auto; /* Ensures horizontal centering */
+  align-self: center; /* Centers the container itself */
+  text-align: center; /* Center content inside */
+}
+
+.dropdown-menu {
+  left: -50px;
+}
+
+}
+@media (min-width:420px) and (max-width: 512px){
+  .dropdown-menu {
+    left: 50px !important;
+  }
+
+}
+
+
+/* Tablet view adjustments */
+@media (min-width: 425px) and (max-width: 1024px) {
+
+  .navigationbarhomepage {
+    height: auto;
+    padding: 15px 20px;
+  }
+
+  .logoinhomepage h2 {
+    font-size: 28px;
+  }
+
+  .searchinput {
+    width: 95%;
+    font-size: 1rem;
+  }
+
+  .bannerhomepage {
+    height: 25%;
+  }
+
+.bannerhomepage {
+  height: 25%;
+  position: relative; /* Ensure it stays within flow */
+  margin-bottom: 20px; /* Add space below the banner */
+  z-index: 1; /* Ensure it doesn't overlap other sections */
+}
+
+.couplebanner {
+  width: 100%;
+  position: absolute;
+  top: 0; /* Adjust to fit within the banner */
+  clip-path: inset(0 0 50px 0); /* Optional if clipping is required */
+}
+
+/* Content homepage fixes */
+.contenthomepage {
+  flex-direction: column; /* Stack content */
+  align-items: center; /* Center horizontally */
+  justify-content: flex-start; /* Start below the banner */
+  padding: 20px 0; /* Add vertical padding */
+  margin-top: 20px; /* Ensure space between banner and content */
+  margin-left: 40px;
+}
+
+.firstcontainerhomepage,
+.thirdcontainerhomepage {
+  width: 90%; /* Optional: Adjust width */
+  max-width: 400px; /* Optional: Add a max-width */
+  margin: 0 auto; /* Ensures horizontal centering */
+  align-self: center; /* Centers the container itself */
+  text-align: center; /* Center content inside */
+}
+
+  .secondcontainerhomepage {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    transform: translateX(-60px);
+  }
+
+  .grid-item-image {
+    max-width: 180px;
+  }
+
+  .h2ofcontainerhomepage,
+  .h2ofmiddlecontainerhomepage {
+    font-size: 1rem;
+  }
+
+  .dropdown-menu {
+    left: 110px;
+  }
+}
+
+
