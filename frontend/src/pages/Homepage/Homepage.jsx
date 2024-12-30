@@ -8,10 +8,8 @@ import chat from '../../assets/homepage/e.jpg';
 import discover from '../../assets/homepage/discover.jpg';
 import profile from '../../assets/homepage/profile.jpg';
 import gift from '../../assets/homepage/gift.jpg';
-import React from 'react'
 import axios from "axios"
 import { useNavigate } from 'react-router-dom'
-
 
 function Homepage() {
   const [dropdownVisible, setDropdownVisible] = useState(false);
@@ -21,12 +19,13 @@ function Homepage() {
   };
 
   const navigate = useNavigate()
-  const logoutUser = async () => {
+  const logoutUser = async (e) => {
+    e.preventDefault()
     try {
       const response = await axios.post(
         "http://localhost:8000/api/v1/users/logout", {}, {
-          withCredentials: true,
-        }
+        withCredentials: true,
+      }
       )
       console.log(response);
       navigate("/login")
@@ -36,7 +35,7 @@ function Homepage() {
   }
   return (
     <div className="homepage">
-     <div className="navigationbarhomepage">
+      <div className="navigationbarhomepage">
         <div className="logoinhomepage">
           <h2>COUPLE SPACE</h2>
         </div>
@@ -75,27 +74,28 @@ function Homepage() {
                 </svg>
               </button>
               {dropdownVisible && (
-                <ul className={`dropdown-menu ${dropdownVisible ? "visible" : ""}`}>                  <li>
+                <ul className={`dropdown-menu ${dropdownVisible ? "visible" : ""}`}>
+                  <li>
                     <Link to="/settings">Settings</Link>
                   </li>
                   <li>
                     <Link to="/activity">Activity</Link>
                   </li>
                   <li>
-                    <Link to="/switch-account">Switch Account</Link>
+                    <Link to="/login" onClick={logoutUser}>LogOut</Link>
                   </li>
                 </ul>
               )}
             </div>
           </form>
         </div>
-      </div> 
-     <div className="bannerhomepage">
+      </div>
+      <div className="bannerhomepage">
         <Link to="/couple-space">
           <img src={couplebanner} alt="Couplebanner" className="couplebanner" />
         </Link>
-     </div>
-     <div className="contenthomepage">
+      </div>
+      <div className="contenthomepage">
         <div className="firstcontainerhomepage">
           <div className="aligningatcenter">
             <Link to="/couple-space">
@@ -139,7 +139,6 @@ function Homepage() {
 
         <div className="thirdcontainerhomepage">
           <div className="aligningatcenter">
-
             <Link to="/couple-space">
               <img
                 src={discover}
@@ -153,10 +152,7 @@ function Homepage() {
           </div>
         </div>
       </div>
-    <div>
-      Ayush
-      <button onClick={logoutUser}>Logout</button>
-    </div>
+    </div> 
   );
 }
 
