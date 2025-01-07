@@ -1,20 +1,30 @@
-const invitationSchema = new Schema(
-    {
-        coupleId: { 
-            type: Schema.Types.ObjectId, 
-            ref: "Couple", required: true 
-        },
-        invitedUserEmail: { 
-            type: String, 
-            required: true, 
-            trim: true },
-        status: { 
-            type: String, 
-            enum: ["pending", "accepted", "declined"], 
-            default: "pending" 
-        },
-    },
-    { timestamps: true }
-);
+import mongoose, { Schema } from 'mongoose';
 
-export const Invitation = mongoose.model("Invitation", invitationSchema);
+const invitationSchema = new mongoose.Schema({
+    senderId: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
+    },
+    receiverEmail: {
+        type: String,
+        required: true,
+    },
+    coupleId: {
+        type: Schema.Types.ObjectId,
+        ref: 'Couple',
+        required: true,
+    },
+    status: {
+        type: String,
+        enum: ['pending', 'accepted', 'rejected'],
+        default: 'pending',
+    },
+    expiration: {
+        type: Date,
+        required: true,
+    },
+}, { timestamps: true });
+
+
+export const Invitation = mongoose.model('Invitation', invitationSchema);

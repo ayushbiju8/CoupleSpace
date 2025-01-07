@@ -43,7 +43,7 @@ function Login() {
                 data, {
                     withCredentials: true,
                 }
-            )
+            ) 
             console.log(response.data);
             clearAll();
             navigate("/")

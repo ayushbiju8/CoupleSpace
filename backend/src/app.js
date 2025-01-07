@@ -27,5 +27,8 @@ import userRouter from "./routes/user.routes.js"
 app.use("/api/v1/users",userRouter)
 // http://localhost:8000/api/v1/users/register
 
+import coupleRouter from "./routes/couple.routes.js"
+app.use("/api/v1/couples",coupleRouter)
+
 
 export default app

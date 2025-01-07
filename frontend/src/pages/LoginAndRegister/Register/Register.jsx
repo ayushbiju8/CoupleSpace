@@ -83,10 +83,10 @@ function Register() {
                     'Content-Type': 'multipart/form-data',
                 },
                 withCredentials: true,
-            });            
+            });             
             console.log(response.data);
             clearAll();
-            navigate("/")
+            navigate("/login")
         } catch (error) {
             if (error.response && error.response.data) {
                 setError(error.response.data.message || 'An error occurred.');

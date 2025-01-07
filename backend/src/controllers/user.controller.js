@@ -208,43 +208,82 @@ const getUserHomePage = AsyncHandler( async (req,res) => {
     
     const user = await User.aggregate([
         {
-            $match : {
-                _id : new mongoose.Types.ObjectId(req.user._id)
+            $match: {
+                _id: new mongoose.Types.ObjectId(req.user._id)
             }
         },
         {
-            $lookup : {
-                from : "couples",
-                localField : "coupleId",
-                foreignField : "_id",
-                as : "couplespace"
+            $lookup: {
+                from: "couples",
+                localField: "coupleId",
+                foreignField: "_id",
+                as: "couplespace"
             }
         },
         {
-            $addFields : {
-                haveCoupleSpace: { $gt: [ { $size: "$couplespace" }, 0 ] }
+            $addFields: {
+                haveCoupleSpace: {
+                    $cond: {
+                        if: {
+                            $and: [
+                                { $gt: [{ $size: "$couplespace" }, 0] }, // Check if there is a couple space
+                                { $ne: [{ $ifNull: [{ $arrayElemAt: ["$couplespace.partnerOne", 0] }, null] }, null] }, // partnerOne is not null
+                                { $ne: [{ $ifNull: [{ $arrayElemAt: ["$couplespace.partnerTwo", 0] }, null] }, null] } // partnerTwo is not null
+                            ]
+                        },
+                        then: true,
+                        else: false
+                    }
+                }
             }
         },
         {
-            $project : {
-                fullName : 1,
-                userName : 1,
-                profilePicture : 1,
-                coupleId : 1,
-                haveCoupleSpace : 1,
+            $lookup: {
+                from: "invitations", // reference to the Invitation collection
+                let: { userEmail: "$email" }, // Assuming user has an `email` field
+                pipeline: [
+                    {
+                        $match: {
+                            $expr: {
+                                $and: [
+                                    { $eq: ["$receiverEmail", "$$userEmail"] }, // match by email
+                                    { $eq: ["$status", "pending"] } // only pending invitations
+                                ]
+                            }
+                        }
+                    }
+                ],
+                as: "pendingInvitations"
+            }
+        },
+        {
+            $addFields: {
+                hasPendingRequest: { $gt: [{ $size: "$pendingInvitations" }, 0] } // If there are pending invitations
+            }
+        },
+        {
+            $project: {
+                fullName: 1,
+                userName: 1,
+                profilePicture: 1,
+                coupleId: 1,
+                haveCoupleSpace: 1,
+                hasPendingRequest: 1,
                 coverPhoto: { $arrayElemAt: ["$couplespace.coverPhoto", 0] }
             }
         }
-    ])
+    ]);
+    
 
     if (!user?.length) {
-        throw new ApiError(401,"User Cant be Found")
+        throw new ApiError(401,"User Can't be Found")
     }
-
 
     return res.status(200).json(
         new ApiResponse(200,user[0],"Homepage details fetched Successfully.")
     )
-})
+});
+
+
 
 export {registerUser,loginUser,logoutUser,refreshAccessToken,getCurrentUser,getUserHomePage}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'; // Fixed import
+import React, { useEffect, useState } from 'react'; // Fixed import
 import { Link } from 'react-router-dom';
 import './Homepage.css';
 import couplebanner from '../../assets/homepage/couplebanner.png';
@@ -6,18 +6,93 @@ import couplepic from '../../assets/homepage/couplepic.jpg';
 import calender from '../../assets/homepage/calender.jpg';
 import chat from '../../assets/homepage/e.jpg';
 import discover from '../../assets/homepage/discover.jpg';
-import profile from '../../assets/homepage/profile.jpg';
+import defaultProfilePic from '../../assets/homepage/profile.jpg';
 import gift from '../../assets/homepage/gift.jpg';
 import axios from "axios"
 import { useNavigate } from 'react-router-dom'
 
 function Homepage() {
-  const [dropdownVisible, setDropdownVisible] = useState(false);
 
-  const toggleDropdown = () => {
-    setDropdownVisible((prev) => !prev);
+  // DB STARTED
+
+
+  const token = localStorage.getItem("authToken");
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [response, setResponse] = useState("")
+  const [coupleSpaceText, setCoupleSpaceText] = useState("Login to create your Couple Space")
+
+
+  const getHomepageDetails = async () => {
+    try {
+      const res = await axios.get("http://localhost:8000/api/v1/users/user-homepage", {
+        headers: { Authorization: `Bearer ${token}` },
+        withCredentials: true,
+      });
+      setResponse(res.data.data)
+      console.log(res.data.data);
+      setIsLoggedIn(true);
+    } catch (error) {
+      if (error.response && error.response.status === 400) {
+        setIsLoggedIn(false);
+      } else {
+        setIsLoggedIn(false);
+        console.error("An unexpected error occurred:", error);
+      }
+    }
   };
 
+  useEffect(() => {
+    getHomepageDetails();
+  }, []);
+
+  // DB ENDED 
+
+  // Contents inside dropdown and others
+
+  const [name, setName] = useState("")
+  const [userName, setUserName] = useState("")
+  const [profileImage, setProfileImage] = useState("")
+
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      setCoupleSpaceText("Login to create your Couple Space")
+    } else {
+      if (response?.haveCoupleSpace) {
+        // if (response?.hasPendingRequest){
+        //   setCoupleSpaceText("Request Pending.")
+        // } else {
+        //   setCoupleSpaceText("Enter your Couple Space")
+        // }
+        setCoupleSpaceText("Enter your Couple Space")
+      } else {
+        setCoupleSpaceText("Create your Couple Space")
+      }
+      if (response?.fullName) {
+        setName(response.fullName)
+      }
+      if (response?.userName) {
+        setUserName(response.userName)
+      }
+      if (response?.profilePicture) {
+        setProfileImage(response.profilePicture)
+      }
+    }
+  }, [isLoggedIn, response])
+
+  // DropDown Started
+
+  const [dropdownNotVisible, setDropdownNotVisible] = useState(true);
+
+  const profileDropDown = (e) => {
+    e.preventDefault();
+    setDropdownNotVisible((prev) => !prev);
+  }
+
+
+  // Dropdown Ended 
+
+  // Logout user Started
   const navigate = useNavigate()
   const logoutUser = async (e) => {
     e.preventDefault()
@@ -33,6 +108,86 @@ function Homepage() {
       console.error("Error Occured While Logging Out :" + error)
     }
   }
+
+  // Logout userEnded
+
+
+
+
+  // Couple Space Pop Up
+
+  const viewCoupleSpacePopUp = () => {
+    if (!isLoggedIn) {
+      navigate("/login")
+      return
+    }
+    if (response?.haveCoupleSpace) {
+      navigate("/couplespace")
+      return
+    }
+    const popup = document.querySelector('.popUpToCreateCoupleSpace');
+    popup.classList.toggle('hiddenCSPopUp');
+    setCSError("")
+    setCoupleSpaceName("")
+    setInvitationEmail("")
+  }
+
+  // Couple Space Pop Ended
+
+
+  // Couple Space Creation
+
+  const [coupleSpaceName, setCoupleSpaceName] = useState("")
+  const [inviationEmail, setInvitationEmail] = useState("")
+  const [CSError, setCSError] = useState("")
+
+
+  const createCoupleSpace = async (e) => {
+    setCSError("Sending Request...")
+    e.preventDefault()
+    try {
+      if (!coupleSpaceName) {
+        setCSError("Couple Space Name is Required")
+        return
+      }
+      if (!inviationEmail) {
+        setCSError("Inviataion Email is Required")
+        return
+      }
+
+      const formData = new FormData();
+      formData.append('coupleName',coupleSpaceName)
+      formData.append('partnerTwoEmail',inviationEmail)
+
+      const response = await axios.post(
+        "http://localhost:8000/api/v1/couples/create-couple-space", formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        withCredentials: true,
+      });
+
+      console.log(response);
+      alert("Request Send Successfully")
+
+      viewCoupleSpacePopUp()
+    } catch (error) {
+      if (error.response && error.response.data) {
+        setError(error.response.data.message || 'An error occurred.');
+    } else {
+        setError('Unable to Create. Please try again later.');
+    }
+    }
+  }
+
+
+
+
+
+
+
+
+
   return (
     <div className="homepage">
       <div className="navigationbarhomepage">
@@ -45,50 +200,37 @@ function Homepage() {
               type="text"
               name="query"
               className="searchinput"
-              placeholder="search.."
+              placeholder="Search.."
             />
-            <div className="searchlogo-container">
-              <button
-                type="button"
-                className="searchlogo"
-                onClick={toggleDropdown}
-              >
-                <svg
-                  width="25"
-                  height="24"
-                  viewBox="0 0 25 24"
-                  fill="currentColor"
-                  className="dropdown-icon"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fillRule="evenodd"
-                    clipRule="evenodd"
-                    d="M16.4337 6.35C16.4337 8.74 14.4937 10.69 12.0937 10.69L12.0837 10.68C9.69365 10.68 7.74365 8.73 7.74365 6.34C7.74365 3.95 9.70365 2 12.0937 2C14.4837 2 16.4337 3.96 16.4337 6.35ZM14.9337 6.34C14.9337 4.78 13.6637 3.5 12.0937 3.5C10.5337 3.5 9.25365 4.78 9.25365 6.34C9.25365 7.9 10.5337 9.18 12.0937 9.18C13.6537 9.18 14.9337 7.9 14.9337 6.34Z"
-                    fill="#323544"
-                  />
-                  <path
-                    d="M12.0235 12.1895C14.6935 12.1895 16.7835 12.9395 18.2335 14.4195V14.4095C20.2801 16.4956 20.2739 19.2563 20.2735 19.4344L20.2735 19.4395C20.2635 19.8495 19.9335 20.1795 19.5235 20.1795H19.5135C19.0935 20.1695 18.7735 19.8295 18.7735 19.4195C18.7735 19.3695 18.7735 17.0895 17.1535 15.4495C15.9935 14.2795 14.2635 13.6795 12.0235 13.6795C9.78346 13.6795 8.05346 14.2795 6.89346 15.4495C5.27346 17.0995 5.27346 19.3995 5.27346 19.4195C5.27346 19.8295 4.94346 20.1795 4.53346 20.1795C4.17346 20.1995 3.77346 19.8595 3.77346 19.4495L3.77345 19.4448C3.77305 19.2771 3.76646 16.506 5.81346 14.4195C7.26346 12.9395 9.35346 12.1895 12.0235 12.1895Z"
-                    fill="#323544"
-                  />
-                </svg>
-              </button>
-              {dropdownVisible && (
-                <ul className={`dropdown-menu ${dropdownVisible ? "visible" : ""}`}>
-                  <li>
-                    <Link to="/settings">Settings</Link>
-                  </li>
-                  <li>
-                    <Link to="/activity">Activity</Link>
-                  </li>
-                  <li>
-                    <Link to="/login" onClick={logoutUser}>LogOut</Link>
-                  </li>
-                </ul>
-              )}
-            </div>
+            <img src={profileImage ? profileImage : defaultProfilePic} className={`profileImageHomepage ${dropdownNotVisible ? '' : 'borderPink'}`} alt="" onClick={profileDropDown} />
           </form>
         </div>
+
+        {/* Profile Part */}
+
+        {isLoggedIn
+          ?
+          <div className={`profileDropdown ${dropdownNotVisible ? 'dropDownNotVisible' : ''}`}>
+            <div className="nameAndProfile">
+              <img src={profileImage ? profileImage : defaultProfilePic} className="nameAndProfileImage" alt="" />
+              <div className="nameAndProfileName">
+                <h3>{name}</h3>
+                <p>{userName}</p>
+              </div>
+            </div>
+            <div className="contentsOfProfileDropdown">Settings</div>
+            <div className="contentsOfProfileDropdown">Notifications</div>
+            <div className="contentsOfProfileDropdown">Contact Us</div>
+            <div className="contentsOfProfileDropdown" onClick={logoutUser}>Logout</div>
+          </div>
+          :
+          <div className={`profileDropdown ${dropdownNotVisible ? 'dropDownNotVisible' : ''}`}>
+            <div className="contentsOfProfileDropdown" onClick={() => navigate('/register')}>Sign Up</div>
+            <div className="contentsOfProfileDropdown" onClick={() => navigate('/login')}>Login</div>
+          </div>
+        }
+
+
       </div>
       <div className="bannerhomepage">
         <Link to="/couple-space">
@@ -98,16 +240,15 @@ function Homepage() {
       <div className="contenthomepage">
         <div className="firstcontainerhomepage">
           <div className="aligningatcenter">
-            <Link to="/couple-space">
-              <img
-                src={couplepic}
-                alt="Couple Space"
-                className="firstcontainerimage"
-                height={350}
-                width={300}
-              />
-              <h2 className="h2ofcontainerhomepage">Enter your Couple Space</h2>
-            </Link>
+            {/* <Link> */}
+            <img
+              src={couplepic}
+              alt="Couple Space"
+              className="firstcontainerimage"
+              onClick={viewCoupleSpacePopUp}
+            />
+            <h2 className="h2ofcontainerhomepage h2O1stC" onClick={viewCoupleSpacePopUp}>{coupleSpaceText}</h2>
+            {/* </Link> */}
           </div>
         </div>
         <div className="secondcontainerhomepage">
@@ -131,7 +272,7 @@ function Homepage() {
           </div>
           <div className="alignatcenter">
             <Link to="/couple-space">
-              <img src={profile} alt="Profile" className="grid-item-image" />
+              <img src={profileImage ? profileImage : defaultProfilePic} alt="Profile" className="grid-item-image" />
               <h2 className="h2ofmiddlecontainerhomepage">Profile</h2>
             </Link>
           </div>
@@ -143,16 +284,50 @@ function Homepage() {
               <img
                 src={discover}
                 alt="Discover"
-                className="firstcontainerimage"
-                height={350}
-                width={300}
+                className="thirdcontainerimage"
               />
               <h2 className="h2ofcontainerhomepage">Discover</h2>
             </Link>
           </div>
         </div>
       </div>
-    </div> 
+      <div className="popUpToCreateCoupleSpace hiddenCSPopUp" >
+        <h2>Create Your Couple Space</h2>
+        <div className="popUpToCreateCoupleSpaceItem">
+          <h3>Name :</h3>
+          <input
+            type="text"
+            placeholder='Enter Couple Space Name'
+            value={coupleSpaceName}
+            onChange={(e) => { setCoupleSpaceName(e.target.value) }}
+          />
+        </div>
+        <div className="popUpToCreateCoupleSpaceItem">
+          <h3>Email :</h3>
+          <input
+            type="text"
+            placeholder='Enter the Recipents email'
+            value={inviationEmail}
+            onChange={(e) => { setInvitationEmail(e.target.value) }}
+          />
+        </div>
+        <button onClick={createCoupleSpace}>Invite</button>
+        <p>Note : Only the last send request is valid.
+        </p>
+        <h4>{CSError}</h4>
+        <div className="popUpToCreateCoupleSpaceClose" onClick={viewCoupleSpacePopUp}><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="28" height="28" color="rgb(75, 75, 75)" fill="none">
+          <path
+            d="M15.5 8.5L12 12M12 12L8.5 15.5M12 12L15.5 15.5M12 12L8.5 8.5"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5" />
+        </svg>
+        </div>
+      </div>
+    </div>
   );
 }
 

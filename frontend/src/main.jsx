@@ -9,6 +9,7 @@ import Login from './pages/LoginAndRegister/Login/Login';
 import ForgotPassword from './pages/LoginAndRegister/ForgotPassword/ForgotPassword';
 import CoupleSpace from './pages/CoupleSpace/CoupleSpace';
 import Calendar from './pages/Calendar/Calendar';
+import JoinCoupleSpace from './pages/JoinCoupleSpace/JoinCoupleSpace'
 
 
 
@@ -52,6 +53,10 @@ const router = createBrowserRouter([
   {
     path: '/calendar',
     element: <Calendar/>
+  },
+  {
+    path: '/accept-invite',
+    element: <JoinCoupleSpace/>
   }
 ])
 
