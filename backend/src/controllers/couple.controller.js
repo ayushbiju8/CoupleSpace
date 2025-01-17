@@ -1,7 +1,7 @@
 import AsyncHandler from "../utils/AsyncHandler.js";
 import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
-import { Couple } from "../models/couple.models.js"
+import { Couple,WishlistItem } from "../models/couple.models.js"
 import { User } from "../models/user.models.js"
 import { Invitation } from "../models/invitation.models.js";
 import sendEmailInvite from "../utils/SendEmail.js"
@@ -239,12 +239,126 @@ const setOrUpdateCoupleProfile = AsyncHandler(async (req, res) => {
 
 })
 
+const addBucketList = AsyncHandler(async (req, res) => {
+    const userId = req.user._id;
+    const { item } = req.body;
 
+    if (!item) {
+        throw new ApiError(400, "Wishlist item is required.");
+    }
+
+    if (!userId) {
+        throw new ApiError(401, "Unauthorized access.");
+    }
+
+    const couple = await Couple.findOne({
+        $or: [{ partnerOne: userId }, { partnerTwo: userId }],
+    });
+
+    if (!couple) {
+        throw new ApiError(404, "Couple space not found.");
+    }
+
+    const newWishlistItem = await WishlistItem.create({ item });
+
+    couple.wishlist.push(newWishlistItem._id);
+    await couple.save();
+
+    return res.status(201).json(
+        new ApiResponse(201, newWishlistItem, "Wishlist item added successfully.")
+    );
+});
+
+const getBucketlist = AsyncHandler(async (req, res) => {
+    const userId = req.user._id;
+
+    // Ensure the user is authorized and part of a couple space
+    if (!userId) {
+        throw new ApiError(401, "Unauthorized access");
+    }
+
+    // Find the couple space that the user belongs to
+    const coupleSpace = await Couple.findOne({
+        $or: [
+            { partnerOne: userId },
+            { partnerTwo: userId },
+        ],
+    });
+
+    if (!coupleSpace) {
+        throw new ApiError(404, "Couple space not found");
+    }
+
+    // Fetch all wishlist items associated with the couple space
+    const wishlistItems = await WishlistItem.find({
+        _id: { $in: coupleSpace.wishlist },
+    });
+
+    // Respond with the wishlist items
+    return res.status(200).json(
+        new ApiResponse(200, wishlistItems, "Wishlist fetched successfully")
+    );
+});
+
+const editBucketlist = AsyncHandler(async (req, res) => {
+    const { wishlistItemId, item, status } = req.body;
+
+    // Validate input
+    if (!wishlistItemId) {
+        throw new ApiError(400, "Wishlist Item ID is required");
+    }
+
+    if (!item && !status) {
+        throw new ApiError(400, "Either item or status must be provided for update");
+    }
+
+    // Find the wishlist item by ID
+    const wishlistItem = await WishlistItem.findById(wishlistItemId);
+    if (!wishlistItem) {
+        throw new ApiError(404, "Wishlist item not found");
+    }
+
+    // Update the fields
+    if (item) wishlistItem.item = item;
+    if (status) wishlistItem.status = status;
+
+    // Save the updated item
+    await wishlistItem.save();
+
+    // Return the updated wishlist item
+    return res.status(200).json(new ApiResponse(200, wishlistItem, "Wishlist item updated successfully"));
+});
+
+const deleteBucketlist = AsyncHandler(async (req, res) => {
+    const { wishlistItemId } = req.body;  // Assuming the ID is passed in the request body
+
+    if (!wishlistItemId) {
+        throw new ApiError(400, "Wishlist item ID is required");
+    }
+
+    // Find the wishlist item by its ID
+    const wishlistItem = await WishlistItem.findById(wishlistItemId);
+
+    if (!wishlistItem) {
+        throw new ApiError(404, "Wishlist item not found");
+    }
+
+    // Delete the wishlist item
+    await WishlistItem.findByIdAndDelete(wishlistItemId);
+
+    return res.status(200).json(
+        new ApiResponse(200, {}, "Wishlist item deleted successfully")
+    );
+});
 
 
 export {
     createCoupleSpace,
     acceptInvitation,
     getCoupleSpace,
-    setOrUpdateCoupleProfile
+    setOrUpdateCoupleProfile,
+    addBucketList,
+    getBucketlist,
+    editBucketlist,
+    deleteBucketlist
 };

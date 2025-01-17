@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { upload } from "../middlewares/multer.middleware.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
-import { createCoupleSpace ,acceptInvitation ,getCoupleSpace ,setOrUpdateCoupleProfile} from "../controllers/couple.controller.js"
+import { createCoupleSpace ,acceptInvitation ,getCoupleSpace ,setOrUpdateCoupleProfile,addBucketList,getBucketlist,editBucketlist,deleteBucketlist} from "../controllers/couple.controller.js"
 
 const router = Router()
 
@@ -35,6 +35,25 @@ router.route("/update-coverphoto").post(
         }
     ]),
     setOrUpdateCoupleProfile
+)
+
+router.route("/addWish").post(
+    verifyJWT,
+    addBucketList
+)
+
+router.route("/getWish").get(
+    verifyJWT,
+    getBucketlist
+)
+
+router.route("/editWish").put(
+    verifyJWT,
+    editBucketlist
+)
+router.route("/deleteWish").post(
+    verifyJWT,
+    deleteBucketlist
 )
 
 export default router

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'; // Fixed import
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import './Homepage.css';
 import couplebanner from '../../assets/homepage/couplebanner.png';
@@ -10,12 +10,11 @@ import defaultProfilePic from '../../assets/homepage/profile.jpg';
 import gift from '../../assets/homepage/gift.jpg';
 import axios from "axios"
 import { useNavigate } from 'react-router-dom'
+import socket from '../../utilities/socket';
 
 function Homepage() {
 
   // DB STARTED
-
-
   const token = localStorage.getItem("authToken");
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [response, setResponse] = useState("")
@@ -44,6 +43,10 @@ function Homepage() {
   useEffect(() => {
     getHomepageDetails();
   }, []);
+
+  // useEffect(()=>{
+  //   window.location.reload()
+  // },[getHomepageDetails])
 
   // DB ENDED 
 
@@ -103,6 +106,7 @@ function Homepage() {
       }
       )
       console.log(response);
+      socket.disconnect()
       navigate("/login")
     } catch (error) {
       console.error("Error Occured While Logging Out :" + error)
@@ -265,7 +269,7 @@ function Homepage() {
             </Link>
           </div>
           <div className="alignatcenter">
-            <Link to="/couple-space">
+            <Link to="/chat">
               <img src={chat} alt="Chat" className="grid-item-image" />
               <h2 className="h2ofmiddlecontainerhomepage">Chat</h2>
             </Link>

@@ -9,6 +9,7 @@ import chat from "../../assets/CoupleSpace/chat.jpeg"
 // import chatIcon from "../../assets/CoupleSpace/ChatIcon.png"
 import love from "../../assets/CoupleSpace/love.jpg"
 import axios from "axios"
+import { useNavigate } from 'react-router-dom'
 
 
 function CoupleSpace() {
@@ -20,6 +21,8 @@ function CoupleSpace() {
   const [responseFetched, setResponseFetched] = useState("")
   const [loading, setLoading] = useState(true);
 
+  const navigate = useNavigate()
+
   const getCoupleSpace = async () => {
     try {
       setLoading(true);
@@ -28,10 +31,14 @@ function CoupleSpace() {
         withCredentials: true,
       });
       setResponseFetched(response.data.data);
+      console.log(response.data.data);
       setProfileUrl(response.data.data.coverPhoto);
       const name1 = response.data.data.partnerOneName.split(" ");
+      console.log(name1[0]);
       setPartnerOneName(name1[0]);
       const name2 = response.data.data.partnerTwoName.split(" ");
+      console.log(name2[0]);
+      console.log("Name "+response.data.data.partnerTwoName);
       setPartnerTwoName(name2[0]);
     } catch (error) {
       console.error("Error fetching couple space data:", error);
@@ -299,9 +306,9 @@ function CoupleSpace() {
             <div id="wishList">
               <div className="boxForAllInCoupleSpace">
                 <div className="boxForAllInCoupleSpaceImage">
-                  <img src={wishList} alt="" />
+                  <img src={wishList} alt="" onClick={(e)=>{navigate("/wishlist")}}/>
                 </div>
-                <div className="boxForAllInCoupleSpaceText">
+                <div className="boxForAllInCoupleSpaceText" onClick={(e)=>{navigate("/wishlist")}}>
                   WishList
                 </div>
               </div>

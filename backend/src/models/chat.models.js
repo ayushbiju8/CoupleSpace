@@ -2,28 +2,22 @@ import mongoose, { Schema } from "mongoose";
 
 const chatSchema = new Schema(
     {
-        coupleId: {
-            type: Schema.Types.ObjectId,
-            ref: "Couple",
-            required: true,
+        senderId :{
+            type : mongoose.Schema.Types.ObjectId,
+            ref : "User",
+            required : true
         },
-        messages: [
-            {
-                sender: {
-                    type: Schema.Types.ObjectId,
-                    ref: "User",
-                    required: true, 
-                },
-                message: {
-                    type: String,
-                    required: true,
-                },
-                timestamp: {
-                    type: Date,
-                    default: Date.now,
-                },
-            },
-        ],
+        receiverId :{
+            type : mongoose.Schema.Types.ObjectId,
+            ref : "User",
+            required : true
+        },
+        text :{
+            type : String
+        },
+        image :{
+            type : String
+        }
     },
     { timestamps: true }
 );

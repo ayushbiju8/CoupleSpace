@@ -10,6 +10,8 @@ import ForgotPassword from './pages/LoginAndRegister/ForgotPassword/ForgotPasswo
 import CoupleSpace from './pages/CoupleSpace/CoupleSpace';
 import Calendar from './pages/Calendar/Calendar';
 import JoinCoupleSpace from './pages/JoinCoupleSpace/JoinCoupleSpace'
+import Wishlist from './pages/Wishlist/Wishlist';
+import Chat from './pages/Chat/Chat';
 
 
 
@@ -57,7 +59,16 @@ const router = createBrowserRouter([
   {
     path: '/accept-invite',
     element: <JoinCoupleSpace/>
-  }
+  },
+  {
+    path: '/wishlist',
+    element: <Wishlist/>
+  },
+  {
+    path: '/chat',
+    element: <Chat/>
+  },
+
 ])
 
 ReactDOM.createRoot(document.getElementById('root')).render(

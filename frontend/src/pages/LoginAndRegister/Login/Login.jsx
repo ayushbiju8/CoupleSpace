@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import "./Login.css";
 import axios from "axios"
 import { useNavigate } from 'react-router-dom';
+import socket from '../../../utilities/socket';
+
 
 
 function Login() {
-
     const navigate = useNavigate()
 
     const [email,setEmail]=useState("")
@@ -45,6 +46,10 @@ function Login() {
                 }
             ) 
             console.log(response.data);
+            console.log(response.headers);
+            if (!socket.connected) {
+                socket.connect()
+            }
             clearAll();
             navigate("/")
         } catch (error) {

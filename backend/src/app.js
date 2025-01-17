@@ -1,8 +1,8 @@
 import express from "express"
 import cors from "cors"
 import cookieParser from "cookie-parser"
+import { app,server,io } from "./utils/Socket.io.js"
 
-const app = express()
 
 app.use(cors({
     origin: process.env.CORS_ORIGIN,
@@ -31,4 +31,7 @@ import coupleRouter from "./routes/couple.routes.js"
 app.use("/api/v1/couples",coupleRouter)
 
 
-export default app
+import chatRouter from "./routes/chat.routes.js"
+app.use("/api/v1/chat",chatRouter)
+
+export {app,server}
