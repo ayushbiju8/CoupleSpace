@@ -1,0 +1,69 @@
+/* Main styles */
+body {
+    background-color: #ffe1e1;
+    font-family: 'Arial', sans-serif;
+    color: #5f5f5f;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+}
+
+.QTquiz-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 300px;
+    background-color: #ffe1e1;
+    /* border: 1px solid red; */
+}
+
+.QTquiz-container>p {
+    /* border: 1px solid red; */
+    margin-top: 20px;
+    max-width: 350px;
+    text-align: center;
+    font-size: smaller;
+}
+
+.QTquestion-box {
+    background: linear-gradient(145deg, #ff80ab, #ff6f61);
+    border-radius: 15px;
+    padding: 20px;
+    max-width: 400px;
+    text-align: center;
+    margin-bottom: 20px;
+    box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.2);
+}
+
+.QTquestion {
+    font-size: 1.2em;
+    color: white;
+    font-weight: bold;
+}
+
+.QTswipe-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.QTswipe-btn {
+    background-color: #ff6f61;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 1.5em;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.QTswipe-btn:hover {
+    background-color: #ff3366;
+    transform: scale(1.1);
+}
+
+.QTswipe-btn:focus {
+    outline: none;
+}

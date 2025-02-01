@@ -12,6 +12,10 @@ import Calendar from './pages/Calendar/Calendar';
 import JoinCoupleSpace from './pages/JoinCoupleSpace/JoinCoupleSpace'
 import Wishlist from './pages/Wishlist/Wishlist';
 import Chat from './pages/Chat/Chat';
+import QualityTalks from './pages/Games/QualityTalks/QualityTalks';
+import WouldYouRather from './pages/Games/WouldYouRather/WouldYouRather';
+import TruthOrDare from './pages/Games/TruthOrDare/TruthOrDare';
+import Funquests from './pages/Funquests/Funquests';
 
 
 
@@ -67,6 +71,22 @@ const router = createBrowserRouter([
   {
     path: '/chat',
     element: <Chat/>
+  },
+  {
+    path: '/games/qualitytalks',
+    element: <QualityTalks/>
+  },
+  {
+    path: '/games/wouldyourather',
+    element: <WouldYouRather/>
+  },
+  {
+    path: '/games/truthordare',
+    element: <TruthOrDare/>
+  },
+  {
+    path: '/funquests',
+    element: <Funquests/>
   },
 
 ])

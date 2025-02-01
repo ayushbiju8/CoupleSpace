@@ -225,6 +225,7 @@ a {
   display: flex;
   justify-content: center;
   align-items: center;
+  text-align: center;
 }
 
 /* For screens between 1440px and 1024px */

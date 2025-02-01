@@ -1,0 +1,237 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.CoupleSpaceMainPage {
+    width: 100%;
+    height: 100%;
+}
+
+.TopImageContainerForCoupleSpace {
+    width: 100%;
+    height: 350px;
+    background-image: url('../../assets/CoupleSpace/ProfileImage.jpeg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+}
+
+/* left */
+.TopImageContainerForCoupleSpaceLeftPart {
+    flex: 1;
+    /* border: 1px solid yellow; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.TopImageContainerForCoupleSpaceLeftPartProfileCircle {
+    /* height: 70%; */
+    width: 70%;
+    max-width: 250px;
+    max-height: 250px;
+    aspect-ratio: 1/1;
+    background-color: #f6f1e8;
+    border: 10px solid pink;
+    border-radius: 50%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2), inset 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.TopImageContainerForCoupleSpaceLeftPartProfileCircle img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    z-index: -1;
+    border-radius: 50%;
+}
+
+
+
+
+/* Middle  */
+.TopImageContainerForCoupleSpaceMiddlePart {
+    flex: 1;
+    /* border: 0.5px solid black; */
+}
+
+.TopImageContainerForCoupleSpaceMiddlePartText {
+    height: 100%;
+    width: 100%;
+    /* background-color: aqua; */
+}
+
+.TopImageContainerForCoupleSpaceMiddlePartTextTop {
+    height: 60%;
+    width: 100%;
+    /* background-color: red; */
+    display: flex;
+    justify-content: center;
+    align-items: end;
+    gap: 6%;
+    /* border: 1px solid black; */
+}
+
+.TopImageContainerForCoupleSpaceMiddlePartTextTop>h1 {
+    font-size: 3rem;
+    color: rgb(89, 24, 24);
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 700;
+    font-style: normal;
+    margin-bottom: 10px;
+
+}
+
+
+.andInCoupleSpace {
+    font-size: 70px;
+    color: rgb(89, 24, 24);
+}
+
+.TopImageContainerForCoupleSpaceMiddlePartTextBottom {
+    /* background-color: blue; */
+    height: 40%;
+    display: flex;
+    justify-content: center;
+    align-items: top;
+}
+
+
+.SpaceInCoupleSpace {
+    width: 150px;
+    height: 50px;
+    background: url('../../assets/CoupleSpace/wrinkledtexture.png') center/cover no-repeat, linear-gradient(45deg, #ffbc3f, #fdca13);
+    font-weight: 700;
+    font-size: larger;
+    border-radius: 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    /* cursor: pointer; */
+    font-family: 'Courier New', Courier, monospace;
+    color: #8B4513;
+    /* Dark brown for an aged look */
+    text-shadow:
+        2px 2px 3px rgba(0, 0, 0, 0.3),
+        -2px -2px 3px rgba(0, 0, 0, 0.2),
+        4px 4px 5px rgba(0, 0, 0, 0.15),
+        -4px -4px 5px rgba(0, 0, 0, 0.1);
+    margin-top: 10px;
+}
+
+
+
+/* Right Part */
+
+
+.TopImageContainerForCoupleSpaceRightPart {
+    flex: 1;
+    /* border: 0.5px solid blue; */
+    display: flex;
+    align-items: end;
+}
+
+.TopImageContainerForCoupleSpaceRightPartBox {
+    /* background-color: #ffbc3f; */
+    height: 100px;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+}
+
+.TopImageContainerForCoupleSpaceRightPartBoxCircle {
+    height: 60px;
+    width: 60px;
+    border-radius: 50%;
+    border: 3px solid palevioletred;
+    background-color: pink;
+}
+
+.TopImageContainerForCoupleSpaceRightPartBoxContainer {
+    width: 60px;
+    /* border: 1px solid black; */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: smaller;
+}
+
+.HiddenBox {
+    display: none;
+}
+
+@media screen and (max-width:1024px) {
+    .TopImageContainerForCoupleSpaceRightPart {
+        display: none;
+    }
+
+    /* .TopImageContainerForCoupleSpaceLeftPart{
+        flex-direction: column;
+    } */
+    .HiddenBox {
+        display: flex;
+    }
+
+    .SpaceInCoupleSpace {
+        display: none;
+    }
+
+    .TopImageContainerForCoupleSpaceMiddlePartTextTop>h1 {
+        font-size: 40px;
+        margin-bottom: 5px;
+    }
+
+    .TopImageContainerForCoupleSpaceMiddlePartTextTop {
+        height: 50%;
+    }
+
+    .andInCoupleSpace {
+        font-size: 50px;
+    }
+
+    .TopImageContainerForCoupleSpaceMiddlePartTextBottom {
+        height: 50%;
+    }
+}
+
+@media screen and (max-width:650px) {
+    .TopImageContainerForCoupleSpaceMiddlePartTextTop>h1 {
+        font-size: 30px;
+        margin-bottom: 5px;
+    }
+
+    .TopImageContainerForCoupleSpaceRightPartBoxCircle {
+        height: 40px;
+        width: 40px;
+    }
+
+    .TopImageContainerForCoupleSpaceLeftPartProfileCircle {
+        width: 100%;
+    }
+
+}
+
+@media screen and (max-width:650px) {
+    .TopImageContainerForCoupleSpace {
+        flex-direction: column;
+    }
+
+    .TopImageContainerForCoupleSpaceLeftPart {
+        height: 200px;
+        flex: none;
+    }
+
+    .TopImageContainerForCoupleSpaceLeftPartProfileCircle {
+        height: 200px;
+        width: 200px;
+    }
+
+    .TopImageContainerForCoupleSpaceMiddlePartTextTop>h1 {
+        font-size: 40px;
+        margin-bottom: 5px;
+    }
+}
+

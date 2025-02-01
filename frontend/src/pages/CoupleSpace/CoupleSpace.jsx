@@ -316,7 +316,7 @@ function CoupleSpace() {
             <div id="calendar">
               <div className="boxForAllInCoupleSpace">
                 <div className="boxForAllInCoupleSpaceImage">
-                  <img src={calendar} alt="" />
+                  <img src={calendar} alt="" onClick={(e)=>{navigate("/calendar")}}/>
                 </div>
                 <div className="boxForAllInCoupleSpaceText">
                   Calendar
@@ -325,18 +325,18 @@ function CoupleSpace() {
             </div>
             <div id="achievements">
 
-              <div className="boxForAllInCoupleSpace">
+              <div className="boxForAllInCoupleSpace" onClick={(e)=>{navigate("/funquests")}}>
                 <div className="boxForAllInCoupleSpaceImage">
                   <img src={achievements} alt="" />
                 </div>
                 <div className="boxForAllInCoupleSpaceText">
-                  Achievements
+                  Funquest
                 </div>
               </div>
             </div>
             <div id="chat">
               <div className="chatSectionOnCoupleSpace">
-                <img src={chat} alt="" />
+                <img src={chat} alt="" onClick={(e)=>{navigate("/chat")}}/>
                 <div className="chatIconInSection">
                   Chat
                   {/* <img src={chatIcon} alt="" /> */}
