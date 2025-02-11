@@ -1,0 +1,66 @@
+
+.gamesInFunQuests {
+    height: 300px;
+    width: 100%; 
+    padding: 0 40px;
+    overflow-x: auto;
+    display: flex;
+    justify-content: center; 
+    gap: 40px; 
+    align-items: center;
+    flex-wrap: nowrap;
+    scroll-behavior: smooth;
+}
+@media screen and (max-width:800px){
+    .gamesInFunQuests {
+        justify-content: flex-start; 
+    }
+}
+.gamesInFunQuests::-webkit-scrollbar {
+    display: none;
+}
+.gameBox {
+    min-width: 200px;
+    width: 200px;
+    height: 200px;
+    background-color: var(--navigationbar-color);
+    border-radius: 6px;
+    cursor: pointer;
+}
+.gameBox>img{
+    width: 100%;
+    border-radius: 6px;
+}
+.questLists{
+    width: 100%;
+    /* background-color: blueviolet; */
+    padding: 30px 0px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+.questItem{
+    background-color: white;
+    width: 90%;
+    max-width: 700px;
+    height: 60px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-right: 20px;
+}
+.questItem>img{
+    height: 60px;
+    border-radius: 10px 0 0 10px;
+}
+.questItem>p{
+    width: 80%;
+    padding-left: 10px;
+}
+.PositionAndCenter{
+    width: 100%;
+    text-align: center;
+    margin-top: 20px;
+}

@@ -1,4 +1,4 @@
-import mongoose,{Schema} from "mongoose"
+import mongoose, { Schema } from "mongoose"
 
 
 // Wishlist Item Model
@@ -38,17 +38,11 @@ const Achievement = mongoose.model("Achievement", achievementSchema);
 
 // Calendar Task Model
 const calendarTaskSchema = mongoose.Schema({
-    title: {
-        type: String,
-        required: true,
-    },
-    description: {
-        type: String,
-    },
-    date: {
-        type: Date,
-        required: true,
-    },
+    title: { type: String, required: true },
+    description: { type: String },
+    date: { type: Date, required: true },
+    startTime: { type: String, required: true }, // New field
+    endTime: { type: String, required: true },   // New field
 }, { timestamps: true });
 
 const CalendarTask = mongoose.model("CalendarTask", calendarTaskSchema);

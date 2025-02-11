@@ -16,6 +16,7 @@ import QualityTalks from './pages/Games/QualityTalks/QualityTalks';
 import WouldYouRather from './pages/Games/WouldYouRather/WouldYouRather';
 import TruthOrDare from './pages/Games/TruthOrDare/TruthOrDare';
 import Funquests from './pages/Funquests/Funquests';
+import Gifts from './pages/Gifts/Gifts';
 
 
 
@@ -87,6 +88,10 @@ const router = createBrowserRouter([
   {
     path: '/funquests',
     element: <Funquests/>
+  },
+  {
+    path: '/gifts',
+    element: <Gifts/>
   },
 
 ])

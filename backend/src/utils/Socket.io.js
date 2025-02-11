@@ -33,8 +33,8 @@ io.on("connection", (socket) => {
     const newMessage = await Chat.create({
       senderId: socket.user?._id,
       receiverId: socket.user?.partner._id,
-      text: data,
-      image: null
+      text: data?.text,
+      image: data?.image || null
     })
     if(!newMessage){
       console.log("failed to create new message");

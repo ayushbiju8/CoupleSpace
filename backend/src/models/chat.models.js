@@ -17,9 +17,14 @@ const chatSchema = new Schema(
         },
         image :{
             type : String
-        }
+        },
+        createdAt: {
+            type: Date,
+            default: Date.now,
+            expires: 259200, // TTL in seconds (3 days = 3 * 24 * 60 * 60 = 259200 seconds)
+        },
     },
-    { timestamps: true }
+    { timestamps: false }
 );
 
 export const Chat = mongoose.model("Chat", chatSchema);

@@ -1,16 +1,15 @@
 import React, { useState, useEffect, useRef } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import "./Calendar.css"; 
+import "./Calendar.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
+import axios from 'axios';
+
 const Calendar = () => {
   const today = new Date();
   const [currentDate, setCurrentDate] = useState(today);
   const [activeDay, setActiveDay] = useState(today.getDate());
-  const [eventsArr, setEventsArr] = useState(() => {
-    const savedEvents = localStorage.getItem("events");
-    return savedEvents ? JSON.parse(savedEvents) : [];
-  });
+  const [eventsArr, setEventsArr] = useState([]);
   const [showAddEventModal, setShowAddEventModal] = useState(false);
   const [newEventTitle, setNewEventTitle] = useState("");
   const [newEventStartTime, setNewEventStartTime] = useState("");
@@ -50,7 +49,21 @@ const Calendar = () => {
     };
   }, []);
 
- 
+  // Fetch events when the component mounts
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/api/v1/couples/get-events', { withCredentials: true });
+        if (response.status === 200) {
+          setEventsArr(response.data.data); // Update state with the events from the backend
+        }
+      } catch (error) {
+        console.error("Error fetching events:", error);
+      }
+    };
+    
+    fetchEvents();
+  }, []); // Empty dependency array ensures this runs only once when the component mounts
 
   const months = [
     "January", "February", "March", "April", "May", "June",
@@ -67,15 +80,11 @@ const Calendar = () => {
   const nextDays = 7 - lastDayOfMonth.getDay() - 1;
 
   const handlePrevMonth = () => {
-    setCurrentDate(
-      new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1)
-    );
+    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1));
   };
 
   const handleNextMonth = () => {
-    setCurrentDate(
-      new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1)
-    );
+    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1));
   };
 
   const handleDayClick = (day, isPrev, isNext) => {
@@ -87,133 +96,6 @@ const Calendar = () => {
       setActiveDay(day);
     }
   };
-
-  const [editingEvent, setEditingEvent] = useState(null); // Track the event being edited
-
-  const handleEditEvent = (event) => {
-    setEditingEvent(event); // Set the event being edited
-    setNewEventTitle(event.title);
-    const [startTime, endTime] = event.time.split(" - ");
-    setNewEventStartTime(startTime);
-    setNewEventEndTime(endTime);
-    setShowAddEventModal(true); // Open the modal
-  };
-  
-  const handleSaveEvent = (e) => {
-    e.preventDefault();
-  
-    if (newEventStartTime >= newEventEndTime) {
-      alert("Start time must be earlier than end time.");
-      return;
-    }
-  
-    if (editingEvent) {
-      // Edit the existing event
-      setEventsArr((prev) => {
-        const updatedEvents = prev.map((dayEvent) => {
-          if (
-            dayEvent.day === activeDay &&
-            dayEvent.month === currentDate.getMonth() + 1 &&
-            dayEvent.year === currentDate.getFullYear()
-          ) {
-            return {
-              ...dayEvent,
-              events: dayEvent.events.map((event) =>
-                event === editingEvent
-                  ? { ...event, title: newEventTitle, time: `${newEventStartTime} - ${newEventEndTime}` }
-                  : event
-              ),
-            };
-          }
-          return dayEvent;
-        });
-  
-        saveEvents(updatedEvents);
-        return updatedEvents;
-      });
-    } else {
-      // Add a new event
-      addEvent(newEventTitle, newEventStartTime, newEventEndTime);
-    }
-  
-    // Reset the form and close the modal
-    setShowAddEventModal(false);
-    setEditingEvent(null);
-    setNewEventTitle("");
-    setNewEventStartTime("");
-    setNewEventEndTime("");
-  };
-  
-  const handleCancelEdit = () => {
-    setEditingEvent(null); // Reset editing state
-    setShowAddEventModal(false); // Close the modal
-    setNewEventTitle("");
-    setNewEventStartTime("");
-    setNewEventEndTime("");
-  };
-  
-   const addEvent = (title, from, to) => {
-    const timeRange = `${from} - ${to}`;
-    const newEvent = { title, time: timeRange };
-
-    setEventsArr((prev) => {
-      const updatedEvents = [...prev];
-      const existingDayIndex = updatedEvents.findIndex(
-        (event) =>
-          event.day === activeDay &&
-          event.month === currentDate.getMonth() + 1 &&
-          event.year === currentDate.getFullYear()
-      );
-
-      if (existingDayIndex >= 0) {
-        const dayEvents = updatedEvents[existingDayIndex].events;
-        const isEventAlreadyAdded = dayEvents.some(
-          (event) => event.title === newEvent.title && event.time === newEvent.time
-        );
-
-        if (!isEventAlreadyAdded) {
-          dayEvents.push(newEvent);
-        }
-      } else {
-        updatedEvents.push({
-          day: activeDay,
-          month: currentDate.getMonth() + 1,
-          year: currentDate.getFullYear(),
-          events: [newEvent],
-        });
-      }
-
-      saveEvents(updatedEvents);
-      return updatedEvents;
-    });
-  };
-
-  const removeEvent = (eventToRemove) => {
-    setEventsArr((prev) => {
-      const updatedEvents = prev.map((dayEvent) => {
-        if (
-          dayEvent.day === activeDay &&
-          dayEvent.month === currentDate.getMonth() + 1 &&
-          dayEvent.year === currentDate.getFullYear()
-        ) {
-          const filteredEvents = dayEvent.events.filter((event) => event !== eventToRemove);
-          if (filteredEvents.length === 0) {
-            // Ensure there are no remaining events on the day
-            return null; // We will remove this day if there are no events left
-          }
-          return {
-            ...dayEvent,
-            events: filteredEvents,
-          };
-        }
-        return dayEvent;
-      }).filter(dayEvent => dayEvent !== null); // Remove day with no events left
-  
-      saveEvents(updatedEvents);
-      return updatedEvents;
-    });
-  };
-  
 
   const handleAddEvent = (e) => {
     e.preventDefault();
@@ -228,13 +110,57 @@ const Calendar = () => {
     setNewEventEndTime("");
   };
 
-  const eventsForActiveDay =
-    eventsArr.find(
-      (event) =>
-        event.day === activeDay &&
-        event.month === currentDate.getMonth() + 1 &&
-        event.year === currentDate.getFullYear()
-    )?.events || [];
+  const addEvent = async (title, startTime, endTime) => {
+    const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), activeDay);
+    const eventData = {
+      title,
+      description: "", // Add a description field if you need one, or leave it empty
+      date: date.toISOString(), // Convert the date to ISO string
+      startTime,
+      endTime
+    };
+
+    try {
+      const response = await axios.post(
+        'http://localhost:8000/api/v1/couples/add-event', 
+        eventData,
+        { withCredentials: true }
+      );
+      
+      // Assuming the backend returns the newly added event or a success message
+      if (response.status === 200) {
+        setEventsArr((prev) => [...prev, response.data]); // Update eventsArr with the new event
+        console.log("Event added:", response.data);
+      }
+    } catch (error) {
+      console.error("Error adding event:", error);
+      alert("Error adding event. Please try again.");
+    }
+  };
+
+  const removeEvent = async (event) => {
+    try {
+      const response = await axios.delete('http://localhost:8000/api/v1/couples/delete-event', {
+        data: { eventId: event._id }, // Send eventId in the request body
+        withCredentials: true,
+      });
+  
+      if (response.status === 200) {
+        setEventsArr((prevEvents) => prevEvents.filter((e) => e._id !== event._id)); // Remove event from state
+        console.log("Event deleted:", event._id);
+      }
+    } catch (error) {
+      console.error("Error deleting event:", error);
+      alert("Error deleting event. Please try again.");
+    }
+  };
+  
+
+  const eventsForActiveDay = eventsArr.filter(
+    (event) =>
+      new Date(event.date).getDate() === activeDay &&
+      new Date(event.date).getMonth() === currentDate.getMonth()
+  );
 
   const days = [];
   for (let i = startDay; i > 0; i--) {
@@ -249,9 +175,8 @@ const Calendar = () => {
     const isActive = i === activeDay;
     const hasEvent = eventsArr.some(
       (event) =>
-        event.day === i &&
-        event.month === currentDate.getMonth() + 1 &&
-        event.year === currentDate.getFullYear()
+        new Date(event.date).getDate() === i &&
+        new Date(event.date).getMonth() === currentDate.getMonth()
     );
 
     days.push(
@@ -272,8 +197,10 @@ const Calendar = () => {
       </div>
     );
   }
-    return (
+
+  return (
     <div className="calendar-container">
+      {/* Add Event Modal */}
       {showAddEventModal && (
         <div className="add-event-modal">
           <div className="modal-content">
@@ -327,7 +254,7 @@ const Calendar = () => {
         </div>
       )}
 
-      <div className="containerofcalendar">
+<div className="containerofcalendar">
         <div className="leftofcalendar">
           <div className="maincentralcalendar">
             <div className="monthofcalendar">

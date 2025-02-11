@@ -1,7 +1,7 @@
 import AsyncHandler from "../utils/AsyncHandler.js";
 import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
-import { Couple,WishlistItem } from "../models/couple.models.js"
+import { Couple,WishlistItem,CalendarTask } from "../models/couple.models.js"
 import { User } from "../models/user.models.js"
 import { Invitation } from "../models/invitation.models.js";
 import sendEmailInvite from "../utils/SendEmail.js"
@@ -352,6 +352,124 @@ const deleteBucketlist = AsyncHandler(async (req, res) => {
 });
 
 
+
+
+
+
+
+
+
+// Calendar
+
+const addCalendarEvent = AsyncHandler(async (req, res) => {
+    const userId = req.user._id;
+    const { title, description, date, startTime, endTime } = req.body;
+
+    if (!title || !date || !startTime || !endTime) {
+        throw new ApiError(400, "Title, date, start time, and end time are required.");
+    }
+
+    const couple = await Couple.findOne({
+        $or: [{ partnerOne: userId }, { partnerTwo: userId }],
+    });
+
+    if (!couple) {
+        throw new ApiError(404, "Couple space not found.");
+    }
+
+    const newEvent = await CalendarTask.create({
+        title,
+        description,
+        date,
+        startTime,
+        endTime,
+    });
+
+    couple.calendar.push(newEvent._id);
+    await couple.save();
+
+    return res.status(201).json(
+        new ApiResponse(201, newEvent, "Calendar event added successfully.")
+    );
+});
+
+const getCalendarEvents = AsyncHandler(async (req, res) => {
+    const userId = req.user._id;
+
+    const couple = await Couple.findOne({
+        $or: [{ partnerOne: userId }, { partnerTwo: userId }],
+    });
+
+    if (!couple) {
+        throw new ApiError(404, "Couple space not found.");
+    }
+
+    const events = await CalendarTask.find({
+        _id: { $in: couple.calendar },
+    });
+
+    return res.status(200).json(
+        new ApiResponse(200, events, "Calendar events fetched successfully.")
+    );
+});
+
+const editCalendarEvent = AsyncHandler(async (req, res) => {
+    const { eventId, title, description, date, startTime, endTime } = req.body;
+
+    if (!eventId) {
+        throw new ApiError(400, "Event ID is required.");
+    }
+
+    const event = await CalendarTask.findById(eventId);
+
+    if (!event) {
+        throw new ApiError(404, "Event not found.");
+    }
+
+    if (title) event.title = title;
+    if (description) event.description = description;
+    if (date) event.date = date;
+    if (startTime) event.startTime = startTime;
+    if (endTime) event.endTime = endTime;
+
+    await event.save();
+
+    return res.status(200).json(
+        new ApiResponse(200, event, "Calendar event updated successfully.")
+    );
+});
+
+const deleteCalendarEvent = AsyncHandler(async (req, res) => {
+    const { eventId } = req.body;
+
+    if (!eventId) {
+        throw new ApiError(400, "Event ID is required.");
+    }
+
+    const event = await CalendarTask.findById(eventId);
+
+    if (!event) {
+        throw new ApiError(404, "Event not found.");
+    }
+
+    await CalendarTask.findByIdAndDelete(eventId);
+
+    const couple = await Couple.findOne({
+        $or: [{ partnerOne: req.user._id }, { partnerTwo: req.user._id }],
+    });
+
+    if (couple) {
+        couple.calendar.pull(eventId);
+        await couple.save();
+    }
+
+    return res.status(200).json(
+        new ApiResponse(200, {}, "Calendar event deleted successfully.")
+    );
+});
+
+
+
 export {
     createCoupleSpace,
     acceptInvitation,
@@ -360,5 +478,9 @@ export {
     addBucketList,
     getBucketlist,
     editBucketlist,
-    deleteBucketlist
+    deleteBucketlist,
+    addCalendarEvent,
+    getCalendarEvents,
+    editCalendarEvent,
+    deleteCalendarEvent
 };

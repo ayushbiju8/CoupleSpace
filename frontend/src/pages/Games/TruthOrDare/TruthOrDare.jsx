@@ -1,87 +1,85 @@
-import React, { useState } from "react";
-import "./TruthOrDare.css";
+import React, { useState } from 'react';
+import './TruthOrDare.css';
+import TopPart from '../../../utilities/TopPart/TopPart.jsx';
 
-const TruthOrDare = () => {
-  const questions = [
-    "What is something you’ve always wanted to ask your partner?",
-    "What’s one thing you’d do to surprise your partner?",
-    "What’s the most adventurous thing you’ve done in a relationship?",
-    "What’s your favorite memory with your partner?",
-    "What’s a fun activity you’d love to do together?",
-  ];
+function TruthOrDare() {
+    // Arrays for Truth questions and Dare challenges
+    const truthQuestions = [
+        "Would you like to have personal space in a relationship?",
+        "Do you believe in soulmates?",
+        "How important is communication in a relationship?",
+        "Would you prefer to spend weekends with your partner?",
+        "What do you think about long-distance relationships?",
+        "Do you believe in love at first sight?",
+        "How do you feel about spending time alone in a relationship?",
+        "What is more important: honesty or kindness in a relationship?",
+        "Would you like your partner to be your best friend?",
+        "Is it okay to have separate hobbies in a relationship?"
+    ];
 
-  const truths = [
-    "What’s one secret you’ve never told anyone?",
-    "What’s your most embarrassing moment?",
-    "What’s the biggest lie you’ve ever told?",
-    "Who is your current celebrity crush?",
-    "What’s the most romantic thing you’ve ever done?",
-  ];
+    const dareChallenges = [
+        "Dance for 1 minute.",
+        "Imitate your favorite animal.",
+        "Call someone and sing to them.",
+        "Do 20 push-ups.",
+        "Try to touch your toes for 1 minute.",
+        "Post something funny on your social media.",
+        "Send a random emoji to a friend.",
+        "Do a funny dance in front of the camera.",
+        "Pretend to be a waiter and serve your partner.",
+        "Talk in an accent for the next 5 minutes."
+    ];
 
-  const dares = [
-    "Do your best impression of your partner.",
-    "Send your partner a funny selfie.",
-    "Sing the chorus of your favorite love song.",
-    "Dance without music for 30 seconds.",
-    "Share the last photo you took on your phone.",
-  ];
+    // State for current question index
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const [isTruth, setIsTruth] = useState(true); // State to toggle between Truth or Dare
 
-  const [currentIndex, setCurrentIndex] = useState(0); // Current question index
-  const [response, setResponse] = useState(""); // Stores Truth or Dare response
-  const [showResponse, setShowResponse] = useState(false); // Toggle response view
+    // Function to handle swipe to next question
+    const nextItem = () => {
+        if (isTruth) {
+            setCurrentIndex((prevIndex) => (prevIndex + 1) % truthQuestions.length);
+        } else {
+            setCurrentIndex((prevIndex) => (prevIndex + 1) % dareChallenges.length);
+        }
+    };
 
-  // Handle the Truth or Dare button click
-  const handleChoice = (choice) => {
-    if (choice === "truth") {
-      setResponse(truths[Math.floor(Math.random() * truths.length)]); // Random truth
-    } else if (choice === "dare") {
-      setResponse(dares[Math.floor(Math.random() * dares.length)]); // Random dare
-    }
-    setShowResponse(true); // Show the response
-  };
+    // Function to handle swipe to previous question
+    const prevItem = () => {
+        if (isTruth) {
+            setCurrentIndex((prevIndex) => (prevIndex - 1 + truthQuestions.length) % truthQuestions.length);
+        } else {
+            setCurrentIndex((prevIndex) => (prevIndex - 1 + dareChallenges.length) % dareChallenges.length);
+        }
+    };
 
-  // Move to the next question
-  const nextQuestion = () => {
-    setShowResponse(false); // Hide the response
-    setResponse(""); // Clear the previous response
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % questions.length); // Cycle through questions
-  };
+    // Function to toggle between Truth and Dare
+    const toggleTruthOrDare = () => {
+        setIsTruth(!isTruth);
+        setCurrentIndex(0); // Reset index when switching between Truth and Dare
+    };
 
-  return (
-    <div className="TDgame-container">
-      <div className="TDquestion-card">
-        {!showResponse ? (
-          <>
-            <h2 className="TDquestion">{questions[currentIndex]}</h2>
-            <div className="TDbuttons">
-              <button
-                className="TDchoice-btn TDtruth-btn"
-                onClick={() => handleChoice("truth")}
-              >
-                Truth
-              </button>
-              <button
-                className="TDchoice-btn TDdare-btn"
-                onClick={() => handleChoice("dare")}
-              >
-                Dare
-              </button>
+    return (
+        <div className='QTBODY'>
+            <TopPart />
+            <div className="QTquiz-container">
+                <div className="QTquestion-box">
+                    <p className="QTquestion">
+                        {isTruth ? truthQuestions[currentIndex] : dareChallenges[currentIndex]}
+                    </p>
+                </div>
+                <div className="QTswipe-buttons">
+                    <button className="QTswipe-btn" onClick={prevItem}>⬅️</button>
+                    <button className="QTswipe-btn" onClick={nextItem}>➡️</button>
+                </div>
+                <div className="QTtoggle-buttons">
+                    <button className="QTtoggle-btn" onClick={toggleTruthOrDare}>
+                        {isTruth ? "Switch to Dare" : "Switch to Truth"}
+                    </button>
+                </div>
+                <p>Note: A good and quality talk with your partner is always nurturing, comforting, and builds deeper understanding. Answer locally with your partner or on a call.</p>
             </div>
-          </>
-        ) : (
-          <>
-            <h2 className="TDresponse-title">
-              {response.includes("truth") ? "Truth" : "Dare"}
-            </h2>
-            <p className="TDresponse">{response}</p>
-            <button className="TDnext-btn" onClick={nextQuestion}>
-              Next Question ➡️
-            </button>
-          </>
-        )}
-      </div>
-    </div>
-  );
+        </div>
+    );
 };
 
 export default TruthOrDare;

@@ -22,10 +22,8 @@ const getUsersForSidebar = AsyncHandler(async (req, res) => {
 const getMessages = AsyncHandler(async (req, res) => {
     try {
         const userId = req.user._id;
-        const { limit = 20, page = 1 } = req.query; // Pagination query params (default values)
-        const skip = (page - 1) * limit;
 
-        // Fetch messages with sorting and pagination
+        // Fetch all messages with sorting by newest first
         const messages = await Chat.find({
             $or: [
                 { senderId: userId },
@@ -33,8 +31,6 @@ const getMessages = AsyncHandler(async (req, res) => {
             ]
         })
         .sort({ createdAt: -1 }) // Sort messages by newest first
-        .skip(skip) // Skip messages for pagination
-        .limit(Number(limit)) // Limit the number of messages fetched
         .select("senderId receiverId text image createdAt") // Select only relevant fields
         .lean(); // Convert to plain JS objects for better performance
 
@@ -124,10 +120,33 @@ const getChatCoupleData = AsyncHandler(async (req, res) => {
     }
 });
 
+const uploadImageOnChat = AsyncHandler(async (req,res) => {
+    // Take image from user.
+    // Upload it
+    // Handle error
+    // Return the response url
+
+    const imgLocalPath = req.files?.image[0]?.path;
+    if (!imgLocalPath) {
+        throw new ApiError(404,"Image not Found")
+    }
+    const image = await uploadOnCloudinary(imgLocalPath)
+    if (!image) {
+        throw new ApiError(400,"Image Failed to Upload on Cloudinary")
+    }
+
+    return res.status(200).json(
+        new ApiResponse(200,{
+            image :image.url
+        },"Image SuccesFully Uploaded and Returned")
+    )
+})
+
 
 export {
     getUsersForSidebar,
     getMessages,
     sendMessages,
-    getChatCoupleData
+    getChatCoupleData,
+    uploadImageOnChat
 }
