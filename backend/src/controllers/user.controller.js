@@ -145,6 +145,7 @@ const logoutUser = AsyncHandler( async (req,res)=>{
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: process.env.NODE_ENV === "production" ? "Strict" : "Lax",
+        domain: ".onrender.com",
     };
     
 
