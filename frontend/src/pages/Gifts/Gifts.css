@@ -1,0 +1,122 @@
+.gallery-wrapper {
+    background-color: #fbd1d1;
+    padding: 20px;
+    text-align: center;
+}
+
+/* Header */
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+.header img {
+    width: 100%;
+    max-height: 250px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.header h1 {
+    font-size: 24px;
+    font-weight: bold;
+    color: #d63384;
+}
+
+/* Product Container */
+.product-container-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.product-container {
+    display: flex;
+    overflow-x: auto;
+    gap: 15px;
+    padding: 10px;
+    scroll-behavior: smooth;
+    max-width: 90%;
+}
+
+.product-card {
+    width: 200px;
+    min-width: 200px;
+    height: 320px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+}
+
+.product-card img {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.product-card h3 {
+    font-size: 14px;
+    font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.product-card p {
+    font-size: 12px;
+    margin: 5px 0;
+}
+
+.price {
+    font-weight: bold;
+    color: black;
+}
+
+.old-price {
+    text-decoration: line-through;
+    color: red;
+    margin-right: 5px;
+}
+
+/* Scroll Buttons */
+.scroll-buttons {
+    background-color: #d63384;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 18px;
+    border-radius: 50%;
+    transition: 0.3s;
+    opacity: 0;
+}
+.product-container-wrapper:hover .scroll-buttons{
+    opacity: 1;
+}
+
+.scroll-buttons:hover {
+    background-color: #a72569;
+}
+
+/* Footer */
+.footer {
+    margin-top: 20px;
+}
+
+.footer img {
+    width: 100%;
+    max-height: 200px;
+    object-fit: cover;
+    border-radius: 10px;
+}

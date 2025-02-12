@@ -10,6 +10,7 @@ import chat from "../../assets/CoupleSpace/chat.jpeg"
 import love from "../../assets/CoupleSpace/love.jpg"
 import axios from "axios"
 import { useNavigate } from 'react-router-dom'
+import MemoriesDisplay from '../../utilities/MemoriesDisplay/MemoriesDisplay'
 
 
 function CoupleSpace() {
@@ -38,7 +39,7 @@ function CoupleSpace() {
       setPartnerOneName(name1[0]);
       const name2 = response.data.data.partnerTwoName.split(" ");
       console.log(name2[0]);
-      console.log("Name "+response.data.data.partnerTwoName);
+      console.log("Name " + response.data.data.partnerTwoName);
       setPartnerTwoName(name2[0]);
     } catch (error) {
       console.error("Error fetching couple space data:", error);
@@ -83,7 +84,7 @@ function CoupleSpace() {
           },
         }
       );
-      window.location.reload(); 
+      window.location.reload();
       setIsPopupVisible(false); // Close the popup after successful upload
     } catch (error) {
       console.error("Error uploading photo:", error);
@@ -143,6 +144,28 @@ function CoupleSpace() {
     );
   }
 
+
+
+
+  // Cupid Score
+
+  useEffect(() => {
+    const fetchAchievements = async () => {
+      try {
+        const res = await axios.get("http://localhost:8000/api/v1/couples/achievements", {
+          withCredentials: true
+        });
+        setCurrent(res.data.cupidScore || 0);
+      } catch (error) {
+        console.error("Error fetching achievements:", error);
+      }
+    };
+
+    fetchAchievements();
+  }, []);
+
+  const [isMemoriesLoading, setIsMemoriesLoading] = useState(true);
+
   return (
     <div className="CoupleSpaceMainPage">
       {loading ? (
@@ -182,7 +205,7 @@ function CoupleSpace() {
                 </svg>
                 <div className="popUpAll">
                   <h3>Upload Your Image</h3>
-                  <input type="file" id="uploadImage" onChange={handleFileChange}/>
+                  <input type="file" id="uploadImage" onChange={handleFileChange} />
                   <button className="uploadButton" onClick={handleUpload}>Upload</button>
                 </div>
               </div>
@@ -306,9 +329,9 @@ function CoupleSpace() {
             <div id="wishList">
               <div className="boxForAllInCoupleSpace">
                 <div className="boxForAllInCoupleSpaceImage">
-                  <img src={wishList} alt="" onClick={(e)=>{navigate("/wishlist")}}/>
+                  <img src={wishList} alt="" onClick={(e) => { navigate("/wishlist") }} />
                 </div>
-                <div className="boxForAllInCoupleSpaceText" onClick={(e)=>{navigate("/wishlist")}}>
+                <div className="boxForAllInCoupleSpaceText" onClick={(e) => { navigate("/wishlist") }}>
                   WishList
                 </div>
               </div>
@@ -316,7 +339,7 @@ function CoupleSpace() {
             <div id="calendar">
               <div className="boxForAllInCoupleSpace">
                 <div className="boxForAllInCoupleSpaceImage">
-                  <img src={calendar} alt="" onClick={(e)=>{navigate("/calendar")}}/>
+                  <img src={calendar} alt="" onClick={(e) => { navigate("/calendar") }} />
                 </div>
                 <div className="boxForAllInCoupleSpaceText">
                   Calendar
@@ -325,7 +348,7 @@ function CoupleSpace() {
             </div>
             <div id="achievements">
 
-              <div className="boxForAllInCoupleSpace" onClick={(e)=>{navigate("/funquests")}}>
+              <div className="boxForAllInCoupleSpace" onClick={(e) => { navigate("/funquests") }}>
                 <div className="boxForAllInCoupleSpaceImage">
                   <img src={achievements} alt="" />
                 </div>
@@ -336,7 +359,7 @@ function CoupleSpace() {
             </div>
             <div id="chat">
               <div className="chatSectionOnCoupleSpace">
-                <img src={chat} alt="" onClick={(e)=>{navigate("/chat")}}/>
+                <img src={chat} alt="" onClick={(e) => { navigate("/chat") }} />
                 <div className="chatIconInSection">
                   Chat
                   {/* <img src={chatIcon} alt="" /> */}
@@ -344,11 +367,11 @@ function CoupleSpace() {
               </div>
             </div>
           </div>
-          {/* <div className="imagePartInCoupleSpace">
-        <h1>Memories</h1>
-        <div className="memoryBoxInCoupleSpace"> 
-        </div>
-      </div> */}
+          {isMemoriesLoading && <div className="main-page-loader">Loading memories...</div>}
+
+          <div className="imagePartInCoupleSpace">
+            <MemoriesDisplay onLoadingChange={setIsMemoriesLoading} />
+          </div>
         </>
       )}
     </div>

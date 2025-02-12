@@ -3,6 +3,7 @@ import { verifyJWT } from "../middlewares/auth.middleware.js";
 import { getMessages, getUsersForSidebar, sendMessages,getChatCoupleData,uploadImageOnChat } from "../controllers/chat.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 
+
 const router = Router()
 
 
@@ -38,5 +39,8 @@ router.route("/imageUpload").post(
     ]),
     uploadImageOnChat
 )
+
+
+
 
 export default router

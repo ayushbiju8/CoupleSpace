@@ -1,11 +1,11 @@
 * {
     margin: 0;
-    padding: 0;
+    padding: 0; 
 }
 
 .CoupleSpaceMainPage {
     width: 100%;
-    height: 100%;
+    height: 100%; 
 }
 
 .TopImageContainerForCoupleSpace {
@@ -613,7 +613,7 @@
 
 .imagePartInCoupleSpace {
     padding: 100px 0px;
-    border: 2px solid red;
+    /* border: 2px solid red; */
 }
 
 .imagePartInCoupleSpace>h1 {

@@ -12,8 +12,13 @@ import { createCoupleSpace ,
     addCalendarEvent,
     getCalendarEvents,
     editCalendarEvent,
-    deleteCalendarEvent
+    deleteCalendarEvent,
+    uploadMemory,
+    getMemories
 } from "../controllers/couple.controller.js"
+import { Achievement } from "../models/couple.models.js";
+import { Couple } from "../models/couple.models.js";
+
 
 const router = Router()
 
@@ -102,6 +107,49 @@ router.route("/delete-event").post(
     deleteCalendarEvent
 );
 
+
+router.get("/achievements", verifyJWT, async (req, res) => {
+    try {
+        // Extract user ID from the token
+        const userId = req.user.id;
+
+        // Find the couple where this user is a partner
+        const couple = await Couple.findOne({
+            $or: [{ partnerOne: userId }, { partnerTwo: userId }]
+        });
+
+        if (!couple) {
+            return res.status(404).json({ message: "Couple space not found" });
+        }
+
+        // Fetch achievements using the couple ID
+        const achievement = await Achievement.findOne({ coupleId: couple._id });
+
+        if (!achievement) {
+            return res.status(404).json({ message: "Achievements not found" });
+        }
+
+        res.status(200).json(achievement);
+    } catch (error) {
+        console.error("Error fetching achievements:", error);
+        res.status(500).json({ message: "Server Error", error });
+    }
+});
+
+router.route("/uploadmemory").post(
+    verifyJWT,
+    upload.fields([
+        {
+            name : "memoryPhoto",
+            maxCount : 1
+        }
+    ]),
+    uploadMemory
+)
+router.route("/getmemory").get(
+    verifyJWT,
+    getMemories
+)
 
 
 export default router

@@ -92,8 +92,8 @@ function Login() {
                                 onChange={(e)=>{setPassword(e.target.value)}}
                             />
                         </div>
-                        <div className="LoginForgotPassword">
-                            <h4>Forgot Password ?</h4>
+                        <div className="LoginForgotPassword" onClick={()=>{navigate('/register')}}>
+                            <h4>New User ?</h4>
                         </div>
                     </div>
                     <div className="LoginButtonAndTerms">

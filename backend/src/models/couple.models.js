@@ -7,7 +7,7 @@ const wishlistItemSchema = mongoose.Schema({
         type: String,
         required: true,
     },
-    status: {
+    status: { 
         type: String,
         enum: ["pending", "completed"],
         default: "pending",
@@ -18,23 +18,16 @@ const WishlistItem = mongoose.model("WishlistItem", wishlistItemSchema);
 
 // Achievement Model
 const achievementSchema = mongoose.Schema({
-    title: {
-        type: String,
-        required: true,
-    },
-    description: {
-        type: String,
-    },
-    progress: {
-        type: Number,
-        default: 0,
-    },
-    date: {
-        type: Date,
-    },
+    coupleId: { type: Schema.Types.ObjectId, ref: "Couple", required: true, unique: true },
+    cupidScore: { type: Number, default: 0 },
+    partnerOneLastLogin: { type: Date },
+    partnerTwoLastLogin: { type: Date },
+    daysTogether: { type: Number, default: 0 },
+    lastScoreUpdate: { type: Date }, // Track when the score was last updated
 }, { timestamps: true });
 
 const Achievement = mongoose.model("Achievement", achievementSchema);
+
 
 // Calendar Task Model
 const calendarTaskSchema = mongoose.Schema({
@@ -94,11 +87,17 @@ const coupleSchema = mongoose.Schema(
             type: Schema.Types.ObjectId,
             ref: "CalendarTask",
         }],
-        roadmap: [{
+        roadmap: [{ 
             type: Schema.Types.ObjectId,
             ref: "Roadmap",
         }],
-        memories: [String],
+        memories: [
+            {
+                url: { type: String, required: true }, // File URL (stored in Cloudinary or local)
+                fileType: { type: String, enum: ["image", "video"], required: true }, // Type of file
+                uploadedAt: { type: Date, default: Date.now }, // Timestamp of upload
+            }
+        ],
     },
     { timestamps: true }
 );

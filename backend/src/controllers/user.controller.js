@@ -4,6 +4,8 @@ import ApiResponse from "../utils/ApiResponse.js"
 import { uploadOnCloudinary } from "../utils/Cloudinary.js"
 import { User } from "../models/user.models.js";
 import mongoose from "mongoose";
+import { Couple } from "../models/couple.models.js";
+import { updateCupidScore } from "./couple.controller.js";
 
 const generateAccessAndRefereshToken = async (userId)=>{
     try {
@@ -67,61 +69,64 @@ const registerUser = AsyncHandler( async (req,res)=>{
     )
 })
 
-const loginUser = AsyncHandler( async (req,res)=>{
-    
-    // aadhyam data edukkka front endinnu (req.body)
-    // email and password 
-    // find the user in the database
-    // check password
-    // create access and refresh tokens
-    // send response and cookies
-
-    const {email,password}=req.body
+const loginUser = AsyncHandler(async (req, res) => {
+    const { email, password } = req.body;
 
     if (!email) {
-        throw new ApiError(400,"Email is Required")
+        throw new ApiError(400, "Email is Required");
     }
     if (!password) {
-        throw new ApiError(400,"Password is Required")
+        throw new ApiError(400, "Password is Required");
     }
 
-    const user = await User.findOne({email})
+    const user = await User.findOne({ email });
 
     if (!user) {
-        throw new ApiError(404,"User doesnt Exist")
+        throw new ApiError(404, "User doesn't Exist");
     }
 
-    const isPasswordValid = await user.isPasswordCorrect(password)
+    const isPasswordValid = await user.isPasswordCorrect(password);
 
     if (!isPasswordValid) {
-        throw new ApiError(401,"Invalid user credentials")
+        throw new ApiError(401, "Invalid user credentials");
     }
 
-    const {accessToken,refreshToken}=await generateAccessAndRefereshToken(user._id)
+    const { accessToken, refreshToken } = await generateAccessAndRefereshToken(user._id);
 
-    const loggedInUser = await User.findById(user._id).select(
-        "-refreshToken -password"
-    )
+    const loggedInUser = await User.findById(user._id).select("-refreshToken -password");
 
-    const options ={
-        httpOnly : true,
-        secure : true
+    const options = {
+        httpOnly: true,
+        secure: true,
+    };
+
+    // Check if user belongs to a couple space
+    const couple = await Couple.findOne({
+        $or: [{ partnerOne: user._id }, { partnerTwo: user._id }]
+    });
+
+    if (couple) {
+        // User has a couple space, update their streak
+        await updateCupidScore(user._id);
     }
-
 
     return res.status(200)
-    .cookie("accessToken",accessToken,options)
-    .cookie("refreshToken",refreshToken,options)
-    .json(
-        new ApiResponse(
-            200,
-            {
-                user: loggedInUser, accessToken, refreshToken
-            },
-            "User logged In Successfully"
-        )
-    )
-})
+        .cookie("accessToken", accessToken, options)
+        .cookie("refreshToken", refreshToken, options)
+        .json(
+            new ApiResponse(
+                200,
+                {
+                    user: loggedInUser,
+                    accessToken,
+                    refreshToken,
+                    hasCoupleSpace: !!couple // Send flag to frontend
+                },
+                "User logged in successfully"
+            )
+        );
+});
+
 
 const logoutUser = AsyncHandler( async (req,res)=>{
     // userinu oru input um nammak kittoola logout cheyyumbo so

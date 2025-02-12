@@ -257,13 +257,13 @@ function Homepage() {
         </div>
         <div className="secondcontainerhomepage">
           <div className="alignatcenter">
-            <Link to="/couple-space">
+            <Link to="/calendar">
               <img src={calender} alt="Calendar" className="grid-item-image" />
               <h2 className="h2ofmiddlecontainerhomepage">Calendar</h2>
             </Link>
           </div>
           <div className="alignatcenter">
-            <Link to="/couple-space">
+            <Link to="/gifts">
               <img src={gift} alt="Gift" className="grid-item-image" />
               <h2 className="h2ofmiddlecontainerhomepage">Gift</h2>
             </Link>

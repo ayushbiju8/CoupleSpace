@@ -1,7 +1,7 @@
 import AsyncHandler from "../utils/AsyncHandler.js";
 import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
-import { Couple,WishlistItem,CalendarTask } from "../models/couple.models.js"
+import { Couple,WishlistItem,CalendarTask,Achievement } from "../models/couple.models.js"
 import { User } from "../models/user.models.js"
 import { Invitation } from "../models/invitation.models.js";
 import sendEmailInvite from "../utils/SendEmail.js"
@@ -79,7 +79,6 @@ const createCoupleSpace = AsyncHandler(async (req, res) => {
     );
 })
 
-
 const acceptInvitation = AsyncHandler(async (req, res) => {
 
     const { token } = req.body
@@ -143,7 +142,6 @@ const acceptInvitation = AsyncHandler(async (req, res) => {
 
 })
 
-
 const getCoupleSpace = AsyncHandler(async (req, res) => {
     const userId = req.user._id;
 
@@ -202,8 +200,6 @@ const getCoupleSpace = AsyncHandler(async (req, res) => {
         new ApiResponse(200, coupleSpace[0], "Couple space fetched successfully")
     );
 });
-
-
 
 const setOrUpdateCoupleProfile = AsyncHandler(async (req, res) => {
     try {
@@ -350,15 +346,6 @@ const deleteBucketlist = AsyncHandler(async (req, res) => {
         new ApiResponse(200, {}, "Wishlist item deleted successfully")
     );
 });
-
-
-
-
-
-
-
-
-
 // Calendar
 
 const addCalendarEvent = AsyncHandler(async (req, res) => {
@@ -468,6 +455,151 @@ const deleteCalendarEvent = AsyncHandler(async (req, res) => {
     );
 });
 
+const updateCupidScore = async (userId) => {
+    try {
+        const couple = await Couple.findOne({
+            $or: [{ partnerOne: userId }, { partnerTwo: userId }]
+        });
+
+        if (!couple) return;
+
+        let achievement = await Achievement.findOne({ coupleId: couple._id });
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // Normalize to start of day
+
+        if (!achievement) {
+            // First-time login tracking
+            achievement = new Achievement({
+                coupleId: couple._id,
+                cupidScore: 0,
+                partnerOneLastLogin: couple.partnerOne.equals(userId) ? today : null,
+                partnerTwoLastLogin: couple.partnerTwo.equals(userId) ? today : null,
+                daysTogether: 1,
+            });
+        } else {
+            // Update login timestamp for the current user
+            if (couple.partnerOne.equals(userId)) {
+                achievement.partnerOneLastLogin = today;
+            } else if (couple.partnerTwo.equals(userId)) {
+                achievement.partnerTwoLastLogin = today;
+            }
+
+            // Get the last score update date, normalized to start of day
+            const lastScoreUpdate = achievement.lastScoreUpdate 
+                ? new Date(achievement.lastScoreUpdate).setHours(0, 0, 0, 0)
+                : null;
+
+            // Check if both partners have logged in today
+            const bothLoggedInToday = 
+                achievement.partnerOneLastLogin &&
+                achievement.partnerTwoLastLogin &&
+                new Date(achievement.partnerOneLastLogin).setHours(0, 0, 0, 0) === today.getTime() &&
+                new Date(achievement.partnerTwoLastLogin).setHours(0, 0, 0, 0) === today.getTime();
+
+            // Only update score if:
+            // 1. Both partners logged in today
+            // 2. Score hasn't been updated today yet
+            if (bothLoggedInToday && lastScoreUpdate !== today.getTime()) {
+                achievement.cupidScore += 1;
+                achievement.lastScoreUpdate = today;
+                console.log("Updating Cupid Score for today");
+            }
+
+            // Update days together
+            const firstDay = new Date(couple.createdAt);
+            achievement.daysTogether = Math.floor((today - firstDay) / (1000 * 60 * 60 * 24));
+        }
+
+        await achievement.save();
+    } catch (error) {
+        console.error("Error updating Cupid Score:", error);
+    }
+};
+
+
+const uploadMemory = AsyncHandler(async (req, res) => {
+    try {
+        console.log("Request received:", req.body, req.files);
+        const userId = req.user._id;
+        const memoryPhotoLocalPath = req.files?.memoryPhoto?.[0]?.path;
+        
+        if (!memoryPhotoLocalPath) {
+            throw new ApiError(400, "Memory Photo is required");
+        }
+
+        const memoryPhoto = await uploadOnCloudinary(memoryPhotoLocalPath);
+        
+        if (!memoryPhoto.url) {
+            throw new ApiError(500, "Error uploading Memory Photo");
+        }
+
+        // Define memory object
+        const newMemory = {
+            url: memoryPhoto.url,
+            fileType: "image", // Assuming all uploads are images for now
+            uploadedAt: new Date()
+        };
+
+        // Find the couple and update their memories array
+        const couple = await Couple.findOneAndUpdate(
+            { $or: [{ partnerOne: userId }, { partnerTwo: userId }] }, 
+            { $push: { memories: newMemory } }, // Push new memory into the array
+            { new: true }
+        );
+
+        if (!couple) {
+            throw new ApiError(404, "Couple space not found");
+        }
+
+        return res.status(200).json(
+            new ApiResponse(200, couple, "Memory Uploaded Successfully and added to Couple Space")
+        );
+    } catch (error) {
+        console.error("Upload Memory Error:", error);
+        throw new ApiError(500, error.message || "Some error occurred");
+    }
+});
+
+const getMemories = AsyncHandler(async (req, res) => {
+    try {
+        const userId = req.user._id;
+
+        // Find the couple document
+        const couple = await Couple.findOne({
+            $or: [{ partnerOne: userId }, { partnerTwo: userId }]
+        });
+
+        if (!couple) {
+            throw new ApiError(404, "Couple space not found");
+        }
+
+        // Check if there are any memories
+        if (!couple.memories || couple.memories.length === 0) {
+            return res.status(200).json(
+                new ApiResponse(200, [], "No memories found")
+            );
+        }
+
+        // Sort memories by uploadedAt in descending order (newest first)
+        const sortedMemories = couple.memories.sort((a, b) => 
+            new Date(b.uploadedAt) - new Date(a.uploadedAt)
+        );
+
+        return res.status(200).json(
+            new ApiResponse(
+                200, 
+                sortedMemories,
+                "Memories retrieved successfully"
+            )
+        );
+    } catch (error) {
+        console.error("Get Memories Error:", error);
+        throw new ApiError(500, error.message || "Error fetching memories");
+    }
+});
+
+
+
 
 
 export {
@@ -482,5 +614,8 @@ export {
     addCalendarEvent,
     getCalendarEvents,
     editCalendarEvent,
-    deleteCalendarEvent
+    deleteCalendarEvent,
+    updateCupidScore,
+    uploadMemory,
+    getMemories
 };

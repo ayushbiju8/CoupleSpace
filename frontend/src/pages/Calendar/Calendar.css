@@ -15,7 +15,7 @@
     align-items: center;
     justify-content: center;
     padding-bottom: 30px;
-    background-color: #e2e1dc;
+    background-color: rgb(255, 236, 239);
     padding: 10px;
   }
   
@@ -438,6 +438,10 @@
   .title .i{
     font-size: 0.3rem; /* Adjust size for visibility */
 
+  }
+  .title>input{
+    border-radius: 6px;
+    padding: 5px;
   }
  
   

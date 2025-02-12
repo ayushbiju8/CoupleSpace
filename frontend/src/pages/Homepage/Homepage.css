@@ -176,7 +176,9 @@ body {
   /* Rounded corners */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   /* Subtle shadow */
-  padding: 15px;
+  /* padding: 15px; */
+  object-fit: cover;
+  aspect-ratio: 1/1;
   /* Padding for spacing inside the box */
   margin: 10px;
   /* Space between boxes */
@@ -317,7 +319,7 @@ a {
     /* Add vertical padding */
     margin-top: 20px;
     /* Ensure space between banner and content */
-    margin-left: -10px;
+    /* margin-left: -10px; */
   }
 
   .firstcontainerhomepage,
@@ -420,9 +422,9 @@ a {
     /* Start below the banner */
     padding: 20px 0;
     /* Add vertical padding */
-    margin-top: 20px;
+    /* margin-top: 20px; */
     /* Ensure space between banner and content */
-    margin-left: 40px;
+    /* margin-left: 40px; */
   }
 
   .firstcontainerhomepage,
@@ -838,3 +840,24 @@ a {
   display: none;
 }
 
+
+
+
+.aligningatcenter{
+  width: 100%;
+  /* background-color: #ff68b9; */
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* For Firefox */
+html {
+  scrollbar-width: none;
+}
+
+/* For IE/Edge */
+body {
+  -ms-overflow-style: none;
+}

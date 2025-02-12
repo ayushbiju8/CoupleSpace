@@ -1,6 +1,7 @@
 import React,{useState,useEffect} from 'react'
 import ProfileImage from "../../assets/DefaultProfilePicture.jpg"
 import './TopPart.css'
+import axios from 'axios'
 function TopPart() {
     const [partnerOneName, setPartnerOneName] = useState("Ayush")
     const [partnerTwoName, setPartnerTwoName] = useState("Merin")

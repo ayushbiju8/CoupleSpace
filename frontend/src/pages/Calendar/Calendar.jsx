@@ -14,12 +14,100 @@ const Calendar = () => {
   const [newEventTitle, setNewEventTitle] = useState("");
   const [newEventStartTime, setNewEventStartTime] = useState("");
   const [newEventEndTime, setNewEventEndTime] = useState("");
+  const [showEditEventModal, setShowEditEventModal] = useState(false);
+  const [editingEvent, setEditingEvent] = useState(null);
+  const [inlineEditingEventId, setInlineEditingEventId] = useState(null);
+  const [inlineEditingTitle, setInlineEditingTitle] = useState("");
+
   const [showOptions, setShowOptions] = useState(null);
 
   const eventBoxRef = useRef(null);
 
   const saveEvents = (updatedEvents) => {
     localStorage.setItem("events", JSON.stringify(updatedEvents));
+  };
+
+  const handleEditEvent = (event) => {
+    setEditingEvent(event);
+    setShowEditEventModal(true);
+  };
+
+  const updateEvent = async (e) => {
+    e.preventDefault();
+    if (editingEvent.startTime >= editingEvent.endTime) {
+      alert("Start time must be earlier than end time.");
+      return;
+    }
+    try {
+      const response = await axios.put(
+        "http://localhost:8000/api/v1/couples/edit-event",
+        {
+          eventId: editingEvent._id,
+          title: editingEvent.title,
+          description: editingEvent.description,
+          date: editingEvent.date,
+          startTime: editingEvent.startTime,
+          endTime: editingEvent.endTime,
+        },
+        { withCredentials: true }
+      );
+
+      if (response.status === 200) {
+        setEventsArr((prevEvents) =>
+          prevEvents.map((e) =>
+            e._id === editingEvent._id ? response.data.updatedEvent : e
+          )
+        );
+        setShowEditEventModal(false);
+        setEditingEvent(null);
+        // alert("Event Updated")
+        window.location.reload();
+        console.log('reloaded');
+      }
+      // if (response.status === 200) {
+      //   setEventsArr((prev) => [...prev, response.data]);
+      //   console.log("Event added:", response.data);
+      // }
+    } catch (error) {
+      console.error("Error updating event:", error);
+      alert("Error updating event. Please try again.");
+    }
+    // window.location.reload()
+  };
+
+  const handleInlineEdit = (event) => {
+    setInlineEditingEventId(event._id);
+    setInlineEditingTitle(event.title);
+  };
+
+  const handleInlineSave = async (event) => {
+    try {
+      const response = await axios.put(
+        "http://localhost:8000/api/v1/couples/edit-event",
+        {
+          eventId: event._id,
+          title: inlineEditingTitle,
+          description: event.description,
+          date: event.date,
+          startTime: event.startTime,
+          endTime: event.endTime,
+        },
+        { withCredentials: true }
+      );
+
+      if (response.status === 200) {
+        setEventsArr((prevEvents) =>
+          prevEvents.map((e) =>
+            e._id === event._id ? response.data.updatedEvent : e
+          )
+        );
+        setInlineEditingEventId(null);
+        setInlineEditingTitle("");
+      }
+    } catch (error) {
+      console.error("Error updating event:", error);
+      alert("Error updating event. Please try again.");
+    }
   };
 
   const handleGoToDate = (selectedDate) => {
@@ -49,21 +137,22 @@ const Calendar = () => {
     };
   }, []);
 
-  // Fetch events when the component mounts
   useEffect(() => {
     const fetchEvents = async () => {
       try {
         const response = await axios.get('http://localhost:8000/api/v1/couples/get-events', { withCredentials: true });
         if (response.status === 200) {
-          setEventsArr(response.data.data); // Update state with the events from the backend
+          // Filter out invalid events
+          const validEvents = response.data.data.filter(event => event?.date);
+          setEventsArr(validEvents);
         }
       } catch (error) {
         console.error("Error fetching events:", error);
       }
     };
-    
+  
     fetchEvents();
-  }, []); // Empty dependency array ensures this runs only once when the component mounts
+  }, []);
 
   const months = [
     "January", "February", "March", "April", "May", "June",
@@ -114,39 +203,43 @@ const Calendar = () => {
     const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), activeDay);
     const eventData = {
       title,
-      description: "", // Add a description field if you need one, or leave it empty
-      date: date.toISOString(), // Convert the date to ISO string
+      description: "",
+      date: date.toISOString(),
       startTime,
       endTime
     };
 
     try {
       const response = await axios.post(
-        'http://localhost:8000/api/v1/couples/add-event', 
+        'http://localhost:8000/api/v1/couples/add-event',
         eventData,
         { withCredentials: true }
       );
-      
-      // Assuming the backend returns the newly added event or a success message
+
       if (response.status === 200) {
-        setEventsArr((prev) => [...prev, response.data]); // Update eventsArr with the new event
+        setEventsArr((prev) => [...prev, response.data]);
         console.log("Event added:", response.data);
       }
     } catch (error) {
       console.error("Error adding event:", error);
       alert("Error adding event. Please try again.");
     }
+    window.location.reload()
   };
 
   const removeEvent = async (event) => {
     try {
-      const response = await axios.delete('http://localhost:8000/api/v1/couples/delete-event', {
-        data: { eventId: event._id }, // Send eventId in the request body
-        withCredentials: true,
-      });
-  
+      const eventData = {
+        eventId: event._id
+      };
+      const response = await axios.post(
+        'http://localhost:8000/api/v1/couples/delete-event',
+        eventData,
+        { withCredentials: true }
+      );
+
       if (response.status === 200) {
-        setEventsArr((prevEvents) => prevEvents.filter((e) => e._id !== event._id)); // Remove event from state
+        setEventsArr((prevEvents) => prevEvents.filter((e) => e._id !== event._id));
         console.log("Event deleted:", event._id);
       }
     } catch (error) {
@@ -154,10 +247,11 @@ const Calendar = () => {
       alert("Error deleting event. Please try again.");
     }
   };
-  
 
   const eventsForActiveDay = eventsArr.filter(
     (event) =>
+      event && // Check if event exists
+      event.date && // Check if event.date exists
       new Date(event.date).getDate() === activeDay &&
       new Date(event.date).getMonth() === currentDate.getMonth()
   );
@@ -175,10 +269,11 @@ const Calendar = () => {
     const isActive = i === activeDay;
     const hasEvent = eventsArr.some(
       (event) =>
+        event?.date && // Check if event and event.date exist
         new Date(event.date).getDate() === i &&
         new Date(event.date).getMonth() === currentDate.getMonth()
     );
-
+  
     days.push(
       <div
         key={`current-${i}`}
@@ -254,7 +349,88 @@ const Calendar = () => {
         </div>
       )}
 
-<div className="containerofcalendar">
+      {/* Edit Event Modal */}
+      {showEditEventModal && editingEvent && (
+        <div className="edit-event-modal">
+          <div className="modal-content">
+            <h3>Edit Event</h3>
+            <form onSubmit={updateEvent}>
+              <div className="form-group">
+                <label htmlFor="editEventTitle">Event Title</label>
+                <input
+                  type="text"
+                  id="editEventTitle"
+                  value={editingEvent.title}
+                  onChange={(e) =>
+                    setEditingEvent({ ...editingEvent, title: e.target.value })
+                  }
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="editEventDescription">Description</label>
+                <textarea
+                  id="editEventDescription"
+                  value={editingEvent.description}
+                  onChange={(e) =>
+                    setEditingEvent({ ...editingEvent, description: e.target.value })
+                  }
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="editEventDate">Date</label>
+                <input
+                  type="date"
+                  id="editEventDate"
+                  value={editingEvent.date.split("T")[0]}
+                  onChange={(e) =>
+                    setEditingEvent({ ...editingEvent, date: e.target.value })
+                  }
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="editEventStartTime">Start Time</label>
+                <input
+                  type="time"
+                  id="editEventStartTime"
+                  value={editingEvent.startTime}
+                  onChange={(e) =>
+                    setEditingEvent({ ...editingEvent, startTime: e.target.value })
+                  }
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="editEventEndTime">End Time</label>
+                <input
+                  type="time"
+                  id="editEventEndTime"
+                  value={editingEvent.endTime}
+                  onChange={(e) =>
+                    setEditingEvent({ ...editingEvent, endTime: e.target.value })
+                  }
+                  required
+                />
+              </div>
+              <div className="modal-actions">
+                <button type="submit" className="save-btn-calendar">
+                  Save Changes
+                </button>
+                <button
+                  type="button"
+                  className="cancel-btn-calendar"
+                  onClick={() => setShowEditEventModal(false)}
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      <div className="containerofcalendar">
         <div className="leftofcalendar">
           <div className="maincentralcalendar">
             <div className="monthofcalendar">
@@ -326,14 +502,28 @@ const Calendar = () => {
                     <div className="event-details">
                       <div className="title">
                         <i className="fas fa-circle"></i>
-                        <h3 className="event-title">{event.title}</h3>
+                        {inlineEditingEventId === event._id ? (
+                          <input
+                            type="text"
+                            value={inlineEditingTitle}
+                            onChange={(e) => setInlineEditingTitle(e.target.value)}
+                          />
+                        ) : (
+                          <h3 className="event-title">{event.title}</h3>
+                        )}
                       </div>
                       <div className="event-time">{event.time}</div>
                     </div>
                     <div className="event-actions">
-                      <button onClick={() => handleEditEvent(event)} className="edit">
-                        Edit
-                      </button>
+                      {inlineEditingEventId === event._id ? (
+                        <button onClick={() => handleInlineSave(event)} className="save">
+                          Save
+                        </button>
+                      ) : (
+                        <button onClick={() => handleInlineEdit(event)} className="edit">
+                          Edit
+                        </button>
+                      )}
                       <button onClick={() => removeEvent(event)} className="remove">
                         Remove
                       </button>
@@ -347,7 +537,6 @@ const Calendar = () => {
               </div>
             )}
           </div>
-
         </div>
       </div>
     </div>
