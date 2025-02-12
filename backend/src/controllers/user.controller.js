@@ -95,10 +95,15 @@ const loginUser = AsyncHandler(async (req, res) => {
 
     const loggedInUser = await User.findById(user._id).select("-refreshToken -password");
 
-    const options = {
-        httpOnly: true,
-        secure: true,
-        domain: ".onrender.com",
+    // ✅ Ensure secure cookies work in production and localhost
+    const isProduction = process.env.NODE_ENV === "production";
+
+    const cookieOptions = {
+        httpOnly: true, // ✅ Prevents JavaScript from accessing cookies
+        secure: isProduction, // ✅ Required for HTTPS
+        sameSite: isProduction ? "None" : "Lax", // ✅ "None" required for cross-origin
+        domain: isProduction ? ".onrender.com" : "localhost", // ✅ Set domain based on environment
+        path: "/", // ✅ Ensure cookies are sent on all routes
     };
 
     // Check if user belongs to a couple space
@@ -112,8 +117,8 @@ const loginUser = AsyncHandler(async (req, res) => {
     }
 
     return res.status(200)
-        .cookie("accessToken", accessToken, options)
-        .cookie("refreshToken", refreshToken, options)
+        .cookie("accessToken", accessToken, cookieOptions)
+        .cookie("refreshToken", refreshToken, cookieOptions)
         .json(
             new ApiResponse(
                 200,
@@ -127,6 +132,7 @@ const loginUser = AsyncHandler(async (req, res) => {
             )
         );
 });
+
 
 
 const logoutUser = AsyncHandler( async (req,res)=>{
