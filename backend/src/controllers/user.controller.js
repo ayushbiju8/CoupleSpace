@@ -98,6 +98,7 @@ const loginUser = AsyncHandler(async (req, res) => {
     const options = {
         httpOnly: true,
         secure: true,
+        domain: ".onrender.com",
     };
 
     // Check if user belongs to a couple space
@@ -179,7 +180,8 @@ const refreshAccessToken = AsyncHandler( async (req,res) => {
 
         const options = {
             httpOnly: true,
-            secure : true
+            secure : true,
+            domain: ".onrender.com",
         }
 
         return res.status(200)
