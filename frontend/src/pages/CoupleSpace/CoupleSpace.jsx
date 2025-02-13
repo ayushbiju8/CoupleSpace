@@ -28,7 +28,7 @@ function CoupleSpace() {
     try {
       setLoading(true);
       const response = await axios.get(
-        "http://localhost:8000/api/v1/couples/couple-space", {
+        "https://couplespace.onrender.com/api/v1/couples/couple-space", {
         withCredentials: true,
       });
       setResponseFetched(response.data.data);
@@ -75,7 +75,7 @@ function CoupleSpace() {
     setLoading(true);
     try {
       const response = await axios.post(
-        "http://localhost:8000/api/v1/couples/update-coverphoto",
+        "https://couplespace.onrender.com/api/v1/couples/update-coverphoto",
         formData,
         {
           withCredentials: true, // Include cookies if necessary
@@ -152,7 +152,7 @@ function CoupleSpace() {
   useEffect(() => {
     const fetchAchievements = async () => {
       try {
-        const res = await axios.get("http://localhost:8000/api/v1/couples/achievements", {
+        const res = await axios.get("https://couplespace.onrender.com/api/v1/couples/achievements", {
           withCredentials: true
         });
         setCurrent(res.data.cupidScore || 0);

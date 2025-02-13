@@ -40,13 +40,15 @@ function Login() {
             }
     
             const response = await axios.post(
-                "http://localhost:8000/api/v1/users/login",
+                "https://couplespace.onrender.com/api/v1/users/login",
                 data, {
                     withCredentials: true,
                 }
             ) 
+
             console.log(response.data);
             console.log(response.headers);
+            localStorage.setItem("token", response.data.token);
             if (!socket.connected) {
                 socket.connect()
             }

@@ -23,7 +23,13 @@ function Homepage() {
 
   const getHomepageDetails = async () => {
     try {
-      const res = await axios.get("http://localhost:8000/api/v1/users/user-homepage", {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        setIsLoggedIn(false);
+        return;
+      }
+
+      const res = await axios.get("https://couplespace.onrender.com/api/v1/users/user-homepage", {
         headers: { Authorization: `Bearer ${token}` },
         withCredentials: true,
       });
@@ -38,7 +44,7 @@ function Homepage() {
         console.error("An unexpected error occurred:", error);
       }
     }
-  };
+};
 
   useEffect(() => {
     getHomepageDetails();
