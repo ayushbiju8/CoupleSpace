@@ -95,17 +95,14 @@ const loginUser = AsyncHandler(async (req, res) => {
 
     const loggedInUser = await User.findById(user._id).select("-refreshToken -password");
 
-    // ✅ Ensure secure cookies work in production and localhost
-    const isProduction = process.env.NODE_ENV === "production";
-
     const cookieOptions = {
-        httpOnly: true, // ✅ Prevents JavaScript from accessing cookies
-        secure: isProduction, // ✅ Required for HTTPS
-        sameSite: isProduction ? "None" : "Lax", // ✅ "None" required for cross-origin
-        domain: isProduction ? ".onrender.com" : "localhost", // ✅ Set domain based on environment
-        path: "/", // ✅ Ensure cookies are sent on all routes
+        httpOnly: true, 
+        secure: true, 
+        sameSite: "none" , 
+        path: "/", 
     };
-
+    
+    // domain:  ".onrender.com" , 
     // Check if user belongs to a couple space
     const couple = await Couple.findOne({
         $or: [{ partnerOne: user._id }, { partnerTwo: user._id }]
