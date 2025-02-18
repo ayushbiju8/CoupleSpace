@@ -18,7 +18,7 @@ console.log("Allowed CORS Origins:", allowedOrigins); // Add this line
 
 const io = new Server(server, {
   cors: {
-    origin: allowedOrigins,
+    origin: '*',
     methods: ["GET", "POST"],
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"],
