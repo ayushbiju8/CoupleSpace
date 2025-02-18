@@ -11,11 +11,13 @@ const server = http.createServer(app);
 
 
 const io = new Server(server, {
-  origin: [
-    process.env.FRONTEND_URL_LOCAL,
-    process.env.FRONTEND_URL_PROD
-],
+  cors: {
+    origin: [process.env.FRONTEND_URL_LOCAL, process.env.FRONTEND_URL_PROD],
+    methods: ["GET", "POST"],
+    credentials: true
+  }
 });
+
 
 io.use(verifyJWTForSocket);
 
