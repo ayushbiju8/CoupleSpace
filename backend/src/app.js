@@ -10,11 +10,12 @@ const allowedOrigins = [
 ];
 
 app.use(cors({
-    origin: "*",  // Allow all origins
+    origin: "https://couplespace.in",  // 👈 Allow ONLY your production frontend
     methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,
+    credentials: true,  // 👈 Needed for cookies/auth headers
     allowedHeaders: ["Content-Type", "Authorization"]
 }));
+
 
 
 app.options("*", cors());

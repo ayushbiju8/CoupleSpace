@@ -17,7 +17,7 @@ const allowedOrigins = [
 
 const io = new Server(server, {
   cors: {
-    origin: "*",  // Allow all origins
+    origin: "https://couplespace.in",  // 👈 Allow ONLY your frontend
     methods: ["GET", "POST"],
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"],
