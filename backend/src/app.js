@@ -3,6 +3,10 @@ import cors from "cors"
 import cookieParser from "cookie-parser"
 import { app, server, io } from "./utils/Socket.io.js"
 
+const allowedOrigins = [
+    process.env.FRONTEND_URL_LOCAL,
+    process.env.FRONTEND_URL_PROD
+];
 
 app.use(cors({
     origin: function (origin, callback) {
