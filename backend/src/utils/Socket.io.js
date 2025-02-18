@@ -11,22 +11,22 @@ const server = http.createServer(app);
 
 
 const allowedOrigins = [
-  process.env.FRONTEND_URL_LOCAL,    // e.g., "http://localhost:5173"
-  process.env.FRONTEND_URL_PROD      // e.g., "https://couplespace.in"
+  process.env.FRONTEND_URL_LOCAL, // e.g., "http://localhost:5173"
+  process.env.FRONTEND_URL_PROD   // e.g., "https://couplespace.in"
 ];
-console.log("Allowed CORS Origins:", allowedOrigins); // Add this line
 
 const io = new Server(server, {
   cors: {
-    origin: '*',
+    origin: allowedOrigins,
     methods: ["GET", "POST"],
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"],
     transports: ['websocket', 'polling']
   },
-  allowEIO3: true, // Enable Socket.IO v3 compatibility
+  allowEIO3: true,
   pingTimeout: 60000
 });
+
 
 io.use(verifyJWTForSocket);
 

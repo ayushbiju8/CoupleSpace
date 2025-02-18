@@ -5,16 +5,23 @@ import { app, server, io } from "./utils/Socket.io.js"
 
 
 const allowedOrigins = [
-    process.env.FRONTEND_URL_LOCAL,
-    process.env.FRONTEND_URL_PROD
+    process.env.FRONTEND_URL_LOCAL, // e.g., "http://localhost:5173"
+    process.env.FRONTEND_URL_PROD   // e.g., "https://couplespace.in"
 ];
 
 app.use(cors({
-    origin: '*',
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error("Not allowed by CORS"));
+        }
+    },
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"]
 }));
+
 
 app.use(express.json({
     limit: "16kb"
