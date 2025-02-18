@@ -3,17 +3,18 @@ import http from "http";
 import express from "express";
 import { verifyJWTForSocket } from "../middlewares/socketauth.middleware.js";
 import { Chat } from "../models/chat.models.js";
-
+import dotenv from "dotenv";
+dotenv.config({ path: "./.env" });
 
 const app = express();
 const server = http.createServer(app);
 
 
 const io = new Server(server, {
-  cors: {
-    origin: process.env.CORS_ORIGIN, 
-    credentials: true,
-  },
+  origin: [
+    process.env.FRONTEND_URL_LOCAL,
+    process.env.FRONTEND_URL_PROD
+],
 });
 
 io.use(verifyJWTForSocket);
