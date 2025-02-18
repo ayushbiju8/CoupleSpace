@@ -9,18 +9,20 @@ import socket from '../../../utilities/socket';
 function Login() {
     const navigate = useNavigate()
 
-    const [email,setEmail]=useState("")
-    const [password,setPassword]=useState("")
-    const [error,setError]=useState("")
+    const [email, setEmail] = useState("")
+    const [password, setPassword] = useState("")
+    const [error, setError] = useState("")
+    const [loginMessage, setLoginMessage] = useState("Login")
 
-    const clearAll = ()=>{
+    const clearAll = () => {
         setEmail("")
         setPassword("")
     }
 
-    const loginUser = async (e)=>{
+    const loginUser = async (e) => {
         e.preventDefault()
         setError("");
+        setLoginMessage("Please Wait...")
         try {
             if (!email) {
                 setError("Email is Required")
@@ -30,21 +32,21 @@ function Login() {
                 setError("Password is Required")
                 return
             }
-            
+
             // const formData = new FormData()
             // formData.append('email',email)
             // formData.append('password',password)
             const data = {
-                email : email,
-                password : password
+                email: email,
+                password: password
             }
-    
+
             const response = await axios.post(
                 "https://couplespace.onrender.com/api/v1/users/login",
                 data, {
-                    withCredentials: true,
-                }
-            ) 
+                withCredentials: true,
+            }
+            )
 
             console.log(response.data);
             console.log(response.headers);
@@ -53,13 +55,15 @@ function Login() {
                 socket.connect()
             }
             clearAll();
+            setLoginMessage("Login")
             navigate("/")
         } catch (error) {
-                if (error.response && error.response.data) {
-                    setError(error.response.data.message || 'An error occurred.');
-                } else {
-                    setError('Unable to Login. Please try again later.');
-                }
+            setLoginMessage("Login")
+            if (error.response && error.response.data) {
+                setError(error.response.data.message || 'An error occurred.');
+            } else {
+                setError('Unable to Login. Please try again later.');
+            }
         }
     }
 
@@ -82,7 +86,7 @@ function Login() {
                                 type="email"
                                 placeholder='Enter Your Email'
                                 value={email}
-                                onChange={(e)=>{setEmail(e.target.value)}}
+                                onChange={(e) => { setEmail(e.target.value) }}
                             />
                         </div>
                         <div className="LoginFormDataAndInputContainer">
@@ -91,18 +95,18 @@ function Login() {
                                 type="password"
                                 placeholder='Enter Your Password'
                                 value={password}
-                                onChange={(e)=>{setPassword(e.target.value)}}
+                                onChange={(e) => { setPassword(e.target.value) }}
                             />
                         </div>
-                        <div className="LoginForgotPassword" onClick={()=>{navigate('/register')}}>
+                        <div className="LoginForgotPassword" onClick={() => { navigate('/register') }}>
                             <h4>New User ?</h4>
                         </div>
                     </div>
                     <div className="LoginButtonAndTerms">
                         <button className="LoginButton"
-                        onClick={loginUser}
+                            onClick={loginUser}
                         >
-                            Login
+                            {loginMessage}
                         </button>
                         <div className="LoginErrorMessage">
                             {error}

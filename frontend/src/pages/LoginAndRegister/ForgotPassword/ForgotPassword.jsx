@@ -35,7 +35,7 @@ function ForgotPassword() {
             };
 
             const response = await axios.post(
-                "http://localhost:8000/api/v1/users/reset-password",
+                "https://couplespace.onrender.com/api/v1/users/reset-password",
                 data, {
                     withCredentials: true,
                 }

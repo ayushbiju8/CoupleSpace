@@ -12,7 +12,7 @@ const MemoriesDisplay = ({ onLoadingChange }) => {
       setLoading(true); // Set loading before making the API request
       onLoadingChange(true); // Inform the main page that loading has started
       try {
-        const response = await axios.get('http://localhost:8000/api/v1/couples/getmemory', {
+        const response = await axios.get('https://couplespace.onrender.com/api/v1/couples/getmemory', {
           withCredentials: true
         });
         setMemories(response.data.data);

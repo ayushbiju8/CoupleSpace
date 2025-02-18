@@ -53,7 +53,7 @@ const roadmapSchema = mongoose.Schema({
         type: String, // URL to the image
     },
 }, { timestamps: true });
-
+ 
 const Roadmap = mongoose.model("Roadmap", roadmapSchema);
 
 // Couple Model with references to each section

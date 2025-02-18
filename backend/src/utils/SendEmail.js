@@ -1,6 +1,6 @@
 import nodemailer from "nodemailer";
 import jwt from "jsonwebtoken";
-import {Invitation} from "../models/invitation.models.js";
+import { Invitation } from "../models/invitation.models.js";
 import ApiError from "./ApiError.js";
 
 const sendEmailInvite = async (senderId, receiverEmail, coupleId) => {
@@ -10,8 +10,12 @@ const sendEmailInvite = async (senderId, receiverEmail, coupleId) => {
             process.env.INVITE_TOKEN_SECRET,
             { expiresIn: '24h' }
         );
+        const FRONTEND_URL = process.env.NODE_ENV === "production"
+            ? process.env.FRONTEND_URL_PROD
+            : process.env.FRONTEND_URL_LOCAL;
 
-        const inviteLink = `${process.env.FRONTEND_URL}accept-invite?token=${token}`;
+        const inviteLink = `${FRONTEND_URL}/accept-invite?token=${token}`;
+
 
         const transporter = nodemailer.createTransport({
             service: 'gmail',

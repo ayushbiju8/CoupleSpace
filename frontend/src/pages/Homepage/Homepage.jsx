@@ -107,7 +107,7 @@ function Homepage() {
     e.preventDefault()
     try {
       const response = await axios.post(
-        "http://localhost:8000/api/v1/users/logout", {}, {
+        "https://couplespace.onrender.com/api/v1/users/logout", {}, {
         withCredentials: true,
       }
       )
@@ -170,7 +170,7 @@ function Homepage() {
       formData.append('partnerTwoEmail',inviationEmail)
 
       const response = await axios.post(
-        "http://localhost:8000/api/v1/couples/create-couple-space", formData, {
+        "https://couplespace.onrender.com/api/v1/couples/create-couple-space", formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

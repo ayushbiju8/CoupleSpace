@@ -12,7 +12,7 @@ function TopPart() {
         try {
             setLoading(true);
             const response = await axios.get(
-                "http://localhost:8000/api/v1/couples/couple-space", {
+                "https://couplespace.onrender.com/api/v1/couples/couple-space", {
                 withCredentials: true,
             });
             setResponseFetched(response.data.data);

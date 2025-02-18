@@ -1,7 +1,7 @@
 import AsyncHandler from "../utils/AsyncHandler.js";
 import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
-import { Couple,WishlistItem,CalendarTask,Achievement } from "../models/couple.models.js"
+import { Couple, WishlistItem, CalendarTask, Achievement, Roadmap } from "../models/couple.models.js"
 import { User } from "../models/user.models.js"
 import { Invitation } from "../models/invitation.models.js";
 import sendEmailInvite from "../utils/SendEmail.js"
@@ -219,7 +219,7 @@ const setOrUpdateCoupleProfile = AsyncHandler(async (req, res) => {
         // console.log(coverPhoto.url);
         // console.log(userId);
         const couple = await Couple.findOneAndUpdate(
-            { $or: [{ partnerOne: userId }, { partnerTwo: userId }] }, 
+            { $or: [{ partnerOne: userId }, { partnerTwo: userId }] },
             {
                 $set: { coverPhoto: coverPhoto.url }
             },
@@ -236,7 +236,7 @@ const setOrUpdateCoupleProfile = AsyncHandler(async (req, res) => {
 })
 
 const addBucketList = AsyncHandler(async (req, res) => {
-    const userId = req.user._id;
+    const userId = req.user?._id;
     const { item } = req.body;
 
     if (!item) {
@@ -485,12 +485,12 @@ const updateCupidScore = async (userId) => {
             }
 
             // Get the last score update date, normalized to start of day
-            const lastScoreUpdate = achievement.lastScoreUpdate 
+            const lastScoreUpdate = achievement.lastScoreUpdate
                 ? new Date(achievement.lastScoreUpdate).setHours(0, 0, 0, 0)
                 : null;
 
             // Check if both partners have logged in today
-            const bothLoggedInToday = 
+            const bothLoggedInToday =
                 achievement.partnerOneLastLogin &&
                 achievement.partnerTwoLastLogin &&
                 new Date(achievement.partnerOneLastLogin).setHours(0, 0, 0, 0) === today.getTime() &&
@@ -516,19 +516,18 @@ const updateCupidScore = async (userId) => {
     }
 };
 
-
 const uploadMemory = AsyncHandler(async (req, res) => {
     try {
         console.log("Request received:", req.body, req.files);
         const userId = req.user._id;
         const memoryPhotoLocalPath = req.files?.memoryPhoto?.[0]?.path;
-        
+
         if (!memoryPhotoLocalPath) {
             throw new ApiError(400, "Memory Photo is required");
         }
 
         const memoryPhoto = await uploadOnCloudinary(memoryPhotoLocalPath);
-        
+
         if (!memoryPhoto.url) {
             throw new ApiError(500, "Error uploading Memory Photo");
         }
@@ -542,7 +541,7 @@ const uploadMemory = AsyncHandler(async (req, res) => {
 
         // Find the couple and update their memories array
         const couple = await Couple.findOneAndUpdate(
-            { $or: [{ partnerOne: userId }, { partnerTwo: userId }] }, 
+            { $or: [{ partnerOne: userId }, { partnerTwo: userId }] },
             { $push: { memories: newMemory } }, // Push new memory into the array
             { new: true }
         );
@@ -581,13 +580,13 @@ const getMemories = AsyncHandler(async (req, res) => {
         }
 
         // Sort memories by uploadedAt in descending order (newest first)
-        const sortedMemories = couple.memories.sort((a, b) => 
+        const sortedMemories = couple.memories.sort((a, b) =>
             new Date(b.uploadedAt) - new Date(a.uploadedAt)
         );
 
         return res.status(200).json(
             new ApiResponse(
-                200, 
+                200,
                 sortedMemories,
                 "Memories retrieved successfully"
             )
@@ -598,6 +597,179 @@ const getMemories = AsyncHandler(async (req, res) => {
     }
 });
 
+
+const addRoadMap = AsyncHandler(async (req, res) => {
+
+    const userId = req.user?._id
+
+    if (!userId) {
+        throw new ApiError(400, "Unauthorized Access")
+    }
+
+    const { heading, description } = req.body
+    if (!heading) {
+        throw new ApiError(400, "Heading is required")
+    }
+    if (!description) {
+        throw new ApiError(400, "Description is required")
+    }
+
+    const imageItem = req.files?.image[0]?.path
+
+    if (!imageItem) {
+        throw new ApiError(400, "Image is required")
+    }
+
+    const image = await uploadOnCloudinary(imageItem)
+
+    if (!image?.url) {
+        throw new ApiError(400, "Image uploading failed.")
+    }
+
+
+
+    const couple = await Couple.findOne({
+        $or: [{ partnerOne: userId }, { partnerTwo: userId }],
+    });
+
+    if (!couple) {
+        throw new ApiError(404, "Couple Space Doesnt Exist")
+    }
+
+    const roadmapItem = await Roadmap.create({
+        heading,
+        description,
+        image: image?.url,
+    })
+
+    couple.roadmap.push(roadmapItem._id)
+    await couple.save()
+
+
+    return res.status(200).json(
+        new ApiResponse(200, {}, "Roadmap Added Succesfully.")
+    )
+})
+
+const getRoadMap = AsyncHandler(async (req, res) => {
+    const userId = req.user?._id
+
+    if (!userId) {
+        throw new ApiError(404, "User is not Authenticated")
+    }
+
+    const couple = await Couple.findOne({
+        $or: [{ partnerOne: userId }, { partnerTwo: userId }]
+    })
+
+    if (!couple) {
+        throw new ApiError("Couple Space doesnt Exist")
+    }
+
+    const roadmaps = await Roadmap.find({
+        _id: { $in: couple.roadmap }
+    })
+
+    return res.status(200).json(
+        new ApiResponse(200, roadmaps, "Roadmap Fetched Succesfully")
+    )
+})
+
+const deleteRoadMap = AsyncHandler(async (req, res) => {
+    const userId = req.user?._id;
+    const { roadmapId } = req.body;
+
+    console.log("Received request body:", req.body);
+
+    if (!userId) {
+        throw new ApiError(401, "Unauthorized Access");
+    }
+
+    if (!roadmapId) {
+        throw new ApiError(400, "Roadmap ID is required");
+    }
+
+    const couple = await Couple.findOne({
+        $or: [{ partnerOne: userId }, { partnerTwo: userId }],
+    });
+
+    if (!couple) {
+        throw new ApiError(404, "Couple Space Doesn't Exist");
+    }
+
+    // Convert roadmapId to string for comparison
+    const roadmapExists = couple.roadmap.some(id => id.toString() === roadmapId.toString());
+    
+    if (!roadmapExists) {
+        throw new ApiError(403, "Unauthorized to delete this roadmap");
+    }
+
+    // Verify the roadmap exists before trying to delete
+    const existingRoadmap = await Roadmap.findById(roadmapId);
+    if (!existingRoadmap) {
+        throw new ApiError(404, "Roadmap not found");
+    }
+
+    await Roadmap.findByIdAndDelete(roadmapId);
+
+    // Update the couple's roadmap array
+    couple.roadmap = couple.roadmap.filter(id => id.toString() !== roadmapId.toString());
+    await couple.save();
+
+    return res.status(200).json(
+        new ApiResponse(200, {}, "Roadmap Deleted Successfully.")
+    );
+});
+
+const updateRoadMap = AsyncHandler(async (req, res) => {
+    const userId = req.user?._id;
+    const { roadmapId, heading, description } = req.body;
+
+    if (!userId) {
+        throw new ApiError(401, "Unauthorized Access");
+    }
+
+    console.log("Request Body:", req.body);
+
+
+    const couple = await Couple.findOne({
+        $or: [{ partnerOne: userId }, { partnerTwo: userId }],
+    });
+
+    if (!couple) {
+        throw new ApiError(404, "Couple Space Doesn't Exist");
+    }
+    console.log("Couple's roadmap IDs:", couple.roadmap);
+    console.log("Checking for roadmapId:", roadmapId);
+
+
+    if (!couple.roadmap.includes(roadmapId)) {
+        throw new ApiError(403, "Unauthorized to update this roadmap");
+    }
+
+    let image;
+    if (req.files?.image) {
+        const imageItem = req.files.image[0]?.path;
+        image = await uploadOnCloudinary(imageItem);
+        if (!image?.url) {
+            throw new ApiError(400, "Image uploading failed.");
+        }
+    }
+
+    const updatedRoadmap = await Roadmap.findByIdAndUpdate(
+        roadmapId,
+        {
+            heading,
+            description,
+            ...(image?.url && { image: image.url })
+        },
+        { new: true }
+    );
+
+    return res.status(200).json(
+        new ApiResponse(200, updatedRoadmap, "Roadmap Updated Successfully.")
+    );
+});
 
 
 
@@ -617,5 +789,9 @@ export {
     deleteCalendarEvent,
     updateCupidScore,
     uploadMemory,
-    getMemories
+    getMemories,
+    addRoadMap,
+    getRoadMap,
+    updateRoadMap,
+    deleteRoadMap
 };

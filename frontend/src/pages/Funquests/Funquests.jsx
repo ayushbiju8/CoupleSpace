@@ -17,7 +17,7 @@ function Funquests() {
   useEffect(() => {
     const fetchAchievements = async () => {
       try {
-        const res = await axios.get("http://localhost:8000/api/v1/couples/achievements",{
+        const res = await axios.get("https://couplespace.onrender.com/api/v1/couples/achievements",{
           withCredentials:true
         }); // Update the correct API route
         setCupidScore(res.data.cupidScore || 0);

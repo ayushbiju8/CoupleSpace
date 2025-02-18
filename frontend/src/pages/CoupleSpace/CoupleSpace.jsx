@@ -166,8 +166,56 @@ function CoupleSpace() {
 
   const [isMemoriesLoading, setIsMemoriesLoading] = useState(true);
 
+
+
+
+  const [CS_isInvisibleVisible, CS_setIsInvisibleVisible] = useState(false);
+  const [CS_file, CS_setFile] = useState(null);
+
+  const CS_handleFileChange = (event) => {
+    CS_setFile(event.target.files[0]); // Store selected file
+  };
+
+  const CS_handleUpload = async () => {
+    if (!CS_file) {
+      alert("Please select a file before uploading.");
+      return;
+    }
+
+    const CS_formData = new FormData();
+    CS_formData.append("memoryPhoto", CS_file); // Append file with key "memoryPhoto"
+
+    try {
+      const CS_response = await axios.post(
+        "https://couplespace.onrender.com/api/v1/couples/uploadmemory",
+        CS_formData,
+        { withCredentials: true } // Enable cookies/session
+      );
+
+      if (CS_response.status === 200) {
+        alert("Upload successful!");
+        CS_setIsInvisibleVisible(false); // Close modal on success
+      } else {
+        alert("Upload failed: " + CS_response.data.message);
+      }
+    } catch (error) {
+      console.error("Upload error:", error);
+      alert("Something went wrong!");
+    }
+  };
+
   return (
     <div className="CoupleSpaceMainPage">
+      <div className={`inivisibleAddImageBox ${CS_isInvisibleVisible ? "" : "hidden"}`}>
+        <div className="closeOninivisibleAddImageBox">
+          <svg onClick={() => CS_setIsInvisibleVisible(false)} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width={20} height={20} color={"#000000"} fill={"none"}>
+            <path d="M19.0005 4.99988L5.00049 18.9999M5.00049 4.99988L19.0005 18.9999" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </div>
+        <h3>Select your file</h3>
+        <input type="file" onChange={CS_handleFileChange} />
+        <button onClick={CS_handleUpload}>Upload Image</button>
+      </div>
       {loading ? (
         <div className="loading-spinner">
           <div className="spinner"></div>
@@ -371,6 +419,9 @@ function CoupleSpace() {
 
           <div className="imagePartInCoupleSpace">
             <MemoriesDisplay onLoadingChange={setIsMemoriesLoading} />
+            <div className="addImageOptionInCS">
+              <h2 onClick={() => CS_setIsInvisibleVisible(prev => !prev)}>Upload Memory</h2>
+            </div>
           </div>
         </>
       )}

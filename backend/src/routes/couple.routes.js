@@ -14,7 +14,11 @@ import { createCoupleSpace ,
     editCalendarEvent,
     deleteCalendarEvent,
     uploadMemory,
-    getMemories
+    getMemories,
+    addRoadMap,
+    getRoadMap,
+    updateRoadMap,
+    deleteRoadMap
 } from "../controllers/couple.controller.js"
 import { Achievement } from "../models/couple.models.js";
 import { Couple } from "../models/couple.models.js";
@@ -72,6 +76,7 @@ router.route("/deleteWish").post(
     verifyJWT,
     deleteBucketlist
 )
+
 
 
 
@@ -149,6 +154,35 @@ router.route("/uploadmemory").post(
 router.route("/getmemory").get(
     verifyJWT,
     getMemories
+)
+
+router.route("/addroadmap").post(
+    verifyJWT,
+    upload.fields([
+        {
+            name: "image",
+            maxCount : 1,
+        }
+    ]),
+    addRoadMap
+)
+router.route("/getRoadmap").get(
+    verifyJWT,
+    getRoadMap
+)
+router.route("/updateRoadmap").put(
+    verifyJWT,
+    upload.fields([
+        {
+            name: "image",
+            maxCount : 1,
+        }
+    ]),
+    updateRoadMap
+)
+router.route("/deleteRoadmap").post(
+    verifyJWT,
+    deleteRoadMap
 )
 
 
