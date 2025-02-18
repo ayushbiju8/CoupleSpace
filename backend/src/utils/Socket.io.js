@@ -17,15 +17,16 @@ const allowedOrigins = [
 
 const io = new Server(server, {
   cors: {
-    origin: allowedOrigins,
+    origin: "*",  // Allow all origins
     methods: ["GET", "POST"],
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"],
-    transports: ['websocket', 'polling']
+    transports: ["websocket", "polling"]
   },
   allowEIO3: true,
   pingTimeout: 60000
 });
+
 
 
 io.use(verifyJWTForSocket);
