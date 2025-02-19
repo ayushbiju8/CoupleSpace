@@ -8,6 +8,9 @@ const sendEmailInvite = async (senderId, receiverEmail, coupleId) => {
     try {
         // Fetch the sender's full name from the database
         const sender = await User.findById(senderId);
+        console.log("EMAIL_USER:", process.env.EMAIL_USER ? "Loaded" : "Not Loaded");
+        console.log("EMAIL_PASS:", process.env.EMAIL_PASS ? "Loaded" : "Not Loaded");
+
         if (!sender) {
             throw new ApiError(404, "Sender not found");
         }
