@@ -13,7 +13,9 @@ const Roadmap = () => {
 
     const fetchRoadmap = async () => {
         try {
-            const response = await axios.get("https://couplespace.onrender.com/api/v1/couples/getroadmap");
+            const response = await axios.get("https://couplespace.onrender.com/api/v1/couples/getroadmap",{
+                withCredentials:true,
+            });
             if (response.data.success) {
                 const roadmapData = response.data.data;
                 const formattedCircles = roadmapData.map((item, index) => ({
@@ -69,7 +71,7 @@ const Roadmap = () => {
                 heading: newCircle.title,
                 description: "",
                 image: "",
-            });
+            },{withCredentials:true});
 
             if (response.data.success) {
                 setCircles((prevCircles) => [...prevCircles, newCircle]);
