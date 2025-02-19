@@ -13,7 +13,7 @@ const Roadmap = () => {
 
     const fetchRoadmap = async () => {
         try {
-            const response = await axios.get("https://couplespace.onrender.com/api/v1/couples/getroadmap");
+            const response = await axios.get("http://localhost:8000/api/v1/couples/getroadmap");
             if (response.data.success) {
                 const roadmapData = response.data.data;
                 const formattedCircles = roadmapData.map((item, index) => ({
@@ -53,14 +53,7 @@ const Roadmap = () => {
     };
 
     const calculateYPosition = (index) => {
-        // Default y position for the first circle
-        if (index === 0) return 50;
-
-        // Ensure the previous circle exists before accessing its y property
-        const prevCircle = circles[index - 1];
-        if (!prevCircle) return 50; // Fallback to default if previous circle is undefined
-
-        return prevCircle.y + 200;
+        return index === 0 ? 50 : circles[index - 1].y + 200;
     };
 
     const handleAddCircle = async () => {
@@ -72,7 +65,7 @@ const Roadmap = () => {
         };
 
         try {
-            const response = await axios.post("https://couplespace.onrender.com/api/v1/couples/addroadmap", {
+            const response = await axios.post("http://localhost:8000/api/v1/couples/addroadmap", {
                 heading: newCircle.title,
                 description: "",
                 image: "",
