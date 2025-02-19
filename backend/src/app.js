@@ -2,8 +2,6 @@ import express from "express"
 import cors from "cors"
 import cookieParser from "cookie-parser"
 import { app, server, io } from "./utils/Socket.io.js"
-import dotenv from "dotenv";
-dotenv.config({ path: "./.env" });
 
 
 const allowedOrigins = [

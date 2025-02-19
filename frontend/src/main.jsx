@@ -17,6 +17,7 @@ import WouldYouRather from './pages/Games/WouldYouRather/WouldYouRather';
 import TruthOrDare from './pages/Games/TruthOrDare/TruthOrDare';
 import Funquests from './pages/Funquests/Funquests';
 import Gifts from './pages/Gifts/Gifts';
+import Roadmap from './pages/Roadmap/Roadmap';
 
 
 
@@ -72,6 +73,10 @@ const router = createBrowserRouter([
   {
     path: '/chat',
     element: <Chat/>
+  },
+  {
+    path: '/roadmap',
+    element: <Roadmap/>
   },
   {
     path: '/games/qualitytalks',
