@@ -20,11 +20,11 @@ const sendEmailInvite = async (senderId, receiverEmail, coupleId) => {
             { expiresIn: '24h' }
         );
 
-        const FRONTEND_URL = process.env.NODE_ENV === "production"
-            ? process.env.FRONTEND_URL_PROD
-            : process.env.FRONTEND_URL_LOCAL;
+        // const FRONTEND_URL = process.env.NODE_ENV === "production"
+        //     ? process.env.FRONTEND_URL_PROD
+        //     : process.env.FRONTEND_URL_LOCAL;
 
-        const inviteLink = `${FRONTEND_URL}/accept-invite?token=${token}`;
+        const inviteLink = `https://couplespace.in/accept-invite?token=${token}`;
 
         const transporter = nodemailer.createTransport({
             service: 'gmail',
