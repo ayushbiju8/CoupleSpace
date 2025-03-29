@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
-import "./CirclePage.css";
+import "./Roadmap.css";
 
-const CirclePage = () => {
+const Roadmap = () => {
   const [circles, setCircles] = useState([]);
   const [selectedCircle, setSelectedCircle] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -257,4 +257,4 @@ const CirclePage = () => {
   );
 };
 
-export default CirclePage;
+export default Roadmap;
