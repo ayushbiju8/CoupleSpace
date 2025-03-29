@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import "./Roadmap.css";
+import TopPart from "../../utilities/TopPart/TopPart";
 
 const Roadmap = () => {
   const [circles, setCircles] = useState([]);
@@ -135,6 +136,8 @@ const Roadmap = () => {
   
   
   return (
+    <>
+      <TopPart />
     <div ref={containerRef} className="Memory-Roadmap">
      <svg
   ref={svgRef}
@@ -254,6 +257,7 @@ const Roadmap = () => {
         </div>
       )}
     </div>
+    </>
   );
 };
 
