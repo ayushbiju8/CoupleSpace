@@ -360,7 +360,7 @@ function CoupleSpace() {
           </div>
           <div className="majorPartCoupleSpace">
             <div id="memoryRoadmap">
-              <img src={memoryRoadmap} className='memoryRoadmapImage' alt="" />
+              <img src={memoryRoadmap} className='memoryRoadmapImage' alt="" onClick={(e) => { navigate("/roadmap") }/>
               <div className="memoryRoadmapTextPlace">
                 Memory Roadmap
               </div>
