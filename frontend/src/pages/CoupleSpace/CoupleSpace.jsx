@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import ProfileImage from "../../assets/DefaultProfilePicture.jpg"
 import "./CoupleSpace.css"
-import memoryRoadmap from "../../assets/CoupleSpace/memoryroadmap.jpeg"
+import memoryRoadmap from "../../assets/CoupleSpace/memory_roadmap.jpeg"
 import wishList from "../../assets/CoupleSpace/WishList.jpeg"
 import calendar from "../../assets/CoupleSpace/calendar.jpeg"
 import achievements from "../../assets/CoupleSpace/achievements.jpeg"
