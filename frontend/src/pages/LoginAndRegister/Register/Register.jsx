@@ -78,7 +78,7 @@ function Register() {
                 formData.append('profilePicture', image);
             }
 
-            const response = await axios.post("https://couplespace.onrender.com/api/v1/users/register", formData, {
+            const response = await axios.post(`${import.meta.env.VITE_DEVELOPMENT_URL}/api/v1/users/register`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },

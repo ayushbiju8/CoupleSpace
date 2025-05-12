@@ -29,7 +29,7 @@ function Homepage() {
         return;
       }
 
-      const res = await axios.get("https://couplespace.onrender.com/api/v1/users/user-homepage", {
+      const res = await axios.get(`${import.meta.env.VITE_DEVELOPMENT_URL}/api/v1/users/user-homepage`, {
         headers: { Authorization: `Bearer ${token}` },
         withCredentials: true,
       });
@@ -107,7 +107,7 @@ function Homepage() {
     e.preventDefault()
     try {
       const response = await axios.post(
-        "https://couplespace.onrender.com/api/v1/users/logout", {}, {
+        `${import.meta.env.VITE_DEVELOPMENT_URL}/api/v1/users/logout`, {}, {
         withCredentials: true,
       }
       )
@@ -170,7 +170,7 @@ function Homepage() {
       formData.append('partnerTwoEmail',inviationEmail)
 
       const response = await axios.post(
-        "https://couplespace.onrender.com/api/v1/couples/create-couple-space", formData, {
+        `${import.meta.env.VITE_DEVELOPMENT_URL}/api/v1/couples/create-couple-space`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

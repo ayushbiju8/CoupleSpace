@@ -19,7 +19,7 @@ const JoinCoupleSpace = () => {
     const AcceptInvitation = async () => {
         try {
             const response = await axios.post(
-                "https://couplespace.onrender.com/api/v1/couples/accept-invite",
+                `${VITE_DEVELOPMENT_URL}/api/v1/couples/accept-invite`,
                 { token },
                 { withCredentials: true, }
             )
