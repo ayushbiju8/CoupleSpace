@@ -42,7 +42,7 @@ function Login() {
             }
 
             const response = await axios.post(
-                `${import.meta.env.VITE_DEVELOPMENT_URL}/api/v1/users/login`,
+                `${import.meta.env.VITE_PRODUCTION_URL}/api/v1/users/login`,
                 data, {
                 withCredentials: true,
             }

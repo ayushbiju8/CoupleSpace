@@ -40,7 +40,7 @@ const Calendar = () => {
     }
     try {
       const response = await axios.put(
-        `${import.meta.env.VITE_DEVELOPMENT_URL}/api/v1/couples/edit-event`,
+        `${import.meta.env.VITE_PRODUCTION_URL}/api/v1/couples/edit-event`,
         {
           eventId: editingEvent._id,
           title: editingEvent.title,
@@ -83,7 +83,7 @@ const Calendar = () => {
   const handleInlineSave = async (event) => {
     try {
       const response = await axios.put(
-        `${import.meta.env.VITE_DEVELOPMENT_URL}/api/v1/couples/edit-event`,
+        `${import.meta.env.VITE_PRODUCTION_URL}/api/v1/couples/edit-event`,
         {
           eventId: event._id,
           title: inlineEditingTitle,
@@ -140,7 +140,7 @@ const Calendar = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_DEVELOPMENT_URL}/api/v1/couples/get-events`, { withCredentials: true });
+        const response = await axios.get(`${import.meta.env.VITE_PRODUCTION_URL}/api/v1/couples/get-events`, { withCredentials: true });
         if (response.status === 200) {
           // Filter out invalid events
           const validEvents = response.data.data.filter(event => event?.date);
@@ -211,7 +211,7 @@ const Calendar = () => {
 
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_DEVELOPMENT_URL}/api/v1/couples/add-event`,
+        `${import.meta.env.VITE_PRODUCTION_URL}/api/v1/couples/add-event`,
         eventData,
         { withCredentials: true }
       );
@@ -233,7 +233,7 @@ const Calendar = () => {
         eventId: event._id
       };
       const response = await axios.post(
-          `${import.meta.env.VITE_DEVELOPMENT_URL}/api/v1/couples/delete-event`,
+          `${import.meta.env.VITE_PRODUCTION_URL}/api/v1/couples/delete-event`,
         eventData,
         { withCredentials: true }
       );

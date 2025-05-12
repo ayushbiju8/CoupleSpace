@@ -22,7 +22,7 @@ const Chat = () => {
   // Fetch Receiver Details
   const getDetails = async () => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_DEVELOPMENT_URL}/api/v1/chat/coupleChat`, {
+      const response = await axios.get(`${import.meta.env.VITE_PRODUCTION_URL}/api/v1/chat/coupleChat`, {
         withCredentials: true,
       });
       const data = response.data.data;
@@ -38,7 +38,7 @@ const Chat = () => {
   // Fetch all messages
   const fetchMessages = async () => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_DEVELOPMENT_URL}/api/v1/chat`, {
+      const response = await axios.get(`${import.meta.env.VITE_PRODUCTION_URL}/api/v1/chat`, {
         withCredentials: true,
       });
 
@@ -94,7 +94,7 @@ const Chat = () => {
         formData.append('image', file); // Attach the file to the FormData
         setLoading(true)
         try {
-          const response = await axios.post( `${import.meta.env.VITE_DEVELOPMENT_URL}/api/v1/chat/imageUpload`, formData, {
+          const response = await axios.post( `${import.meta.env.VITE_PRODUCTION_URL}/api/v1/chat/imageUpload`, formData, {
             headers: {
               'Content-Type': 'multipart/form-data',
             }, withCredentials: true,

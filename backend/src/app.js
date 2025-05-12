@@ -9,10 +9,16 @@ const allowedOrigins = [
     process.env.FRONTEND_URL_PROD   // e.g., "https://couplespace.in"
 ];
 
+// app.use(cors({
+//     origin: "http://localhost:5173",  
+//     methods: ["GET", "POST", "PUT", "DELETE"],
+//     credentials: true,  
+//     allowedHeaders: ["Content-Type", "Authorization"]
+// }));
 app.use(cors({
-    origin: "http://localhost:5173",  // 👈 Allow ONLY your production frontend
+    origin: "https://couplespace.in",
     methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,  // 👈 Needed for cookies/auth headers
+    credentials: true, 
     allowedHeaders: ["Content-Type", "Authorization"]
 }));
 

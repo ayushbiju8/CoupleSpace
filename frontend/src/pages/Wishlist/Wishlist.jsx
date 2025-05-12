@@ -12,7 +12,7 @@ function Wishlist() {
         try {
             setLoading(true);
             const response = await axios.get(
-                `${import.meta.env.VITE_DEVELOPMENT_URL}/api/v1/couples/couple-space`, {
+                `${import.meta.env.VITE_PRODUCTION_URL}/api/v1/couples/couple-space`, {
                 withCredentials: true,
             });
             setProfileUrl(response.data.data.coverPhoto);
@@ -37,7 +37,7 @@ function Wishlist() {
     const fetchTodos = async () => {
         try {
             setLoading(true);
-            const response = await axios.get(`${import.meta.env.VITE_DEVELOPMENT_URL}/api/v1/couples/getWish`, {
+            const response = await axios.get(`${import.meta.env.VITE_PRODUCTION_URL}/api/v1/couples/getWish`, {
                 withCredentials: true,
             });
             setTodos(response.data.data);
@@ -58,7 +58,7 @@ function Wishlist() {
         if (newTodo.trim() === "") return;
         try {
             const response = await axios.post(
-                `${import.meta.env.VITE_DEVELOPMENT_URL}/api/v1/couples/addWish`,
+                `${import.meta.env.VITE_PRODUCTION_URL}/api/v1/couples/addWish`,
                 { item: newTodo },
                 { withCredentials: true }
             );
@@ -73,7 +73,7 @@ function Wishlist() {
     const removeTodo = async (id) => {
         try {
             await axios.post(
-                `${import.meta.env.VITE_DEVELOPMENT_URL}/api/v1/couples/deleteWish`,
+                `${import.meta.env.VITE_PRODUCTION_URL}/api/v1/couples/deleteWish`,
                 { wishlistItemId: id },
                 { withCredentials: true }
             );
@@ -87,7 +87,7 @@ function Wishlist() {
     const saveTodo = async (id, newText) => {
         try {
             const response = await axios.put(
-                `${import.meta.env.VITE_DEVELOPMENT_URL}/api/v1/couples/editWish`,
+                `${import.meta.env.VITE_PRODUCTION_URL}/api/v1/couples/editWish`,
                 { wishlistItemId: id, item: newText, status: "pending" }, // Defaulting to "pending" unless otherwise set
                 { withCredentials: true }
             );

@@ -35,7 +35,7 @@ function ForgotPassword() {
             };
 
             const response = await axios.post(
-                `${import.meta.env.VITE_DEVELOPMENT_URLCTION_URLCTION_URLCTION_URLCTION_URL}/api/v1/users/reset-password`,
+                `${import.meta.env.VITE_PRODUCTION_URLCTION_URLCTION_URLCTION_URLCTION_URL}/api/v1/users/reset-password`,
                 data, {
                     withCredentials: true,
                 }

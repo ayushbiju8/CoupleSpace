@@ -341,7 +341,7 @@ function Roadmap() {
   const [loading, setLoading] = useState(true)
   const getMemories = async () => {
     setLoading(true)
-    const memories = await axios.get(`${import.meta.env.VITE_DEVELOPMENT_URL}/api/v1/couples/getroadmap`, {
+    const memories = await axios.get(`${import.meta.env.VITE_PRODUCTION_URL}/api/v1/couples/getroadmap`, {
       withCredentials: true,
     });
     console.log(memories.data.data);

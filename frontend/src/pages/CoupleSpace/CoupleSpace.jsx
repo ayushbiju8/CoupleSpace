@@ -28,7 +28,7 @@ function CoupleSpace() {
     try {
       setLoading(true);
       const response = await axios.get(
-        `${import.meta.env.VITE_DEVELOPMENT_URL}/api/v1/couples/couple-space`, {
+        `${import.meta.env.VITE_PRODUCTION_URL}/api/v1/couples/couple-space`, {
         withCredentials: true,
       });
       setResponseFetched(response.data.data);
@@ -75,7 +75,7 @@ function CoupleSpace() {
     setLoading(true);
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_DEVELOPMENT_URL}/api/v1/couples/update-coverphoto`,
+        `${import.meta.env.VITE_PRODUCTION_URL}/api/v1/couples/update-coverphoto`,
         formData,
         {
           withCredentials: true, // Include cookies if necessary
@@ -152,7 +152,7 @@ function CoupleSpace() {
   useEffect(() => {
     const fetchAchievements = async () => {
       try {
-        const res = await axios.get(`${import.meta.env.VITE_DEVELOPMENT_URL}/api/v1/couples/achievements`, {
+        const res = await axios.get(`${import.meta.env.VITE_PRODUCTION_URL}/api/v1/couples/achievements`, {
           withCredentials: true
         });
         setCurrent(res.data.cupidScore || 0);
@@ -187,7 +187,7 @@ function CoupleSpace() {
 
     try {
       const CS_response = await axios.post(
-        `${import.meta.env.VITE_DEVELOPMENT_URL}/api/v1/couples/uploadmemory`,
+        `${import.meta.env.VITE_PRODUCTION_URL}/api/v1/couples/uploadmemory`,
         CS_formData,
         { withCredentials: true } // Enable cookies/session
       );

@@ -27,7 +27,7 @@ const sendEmailInvite = async (senderId, receiverEmail, coupleId) => {
         //     ? process.env.FRONTEND_URL_PROD
         //     : process.env.FRONTEND_URL_LOCAL;
 
-        const inviteLink = `http://localhost:5173/accept-invite?token=${token}`;
+        const inviteLink = `https://couplespace.in/accept-invite?token=${token}`;
 
         const transporter = nodemailer.createTransport({
             service: 'gmail',
