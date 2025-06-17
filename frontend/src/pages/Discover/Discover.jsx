@@ -29,7 +29,7 @@ function Discover() {
 
   const [posts, setPosts] = useState(null)
   const api = axios.create({
-    baseURL: "http://localhost:8000/api/v1/post",
+    baseURL: `${import.meta.env.VITE_PRODUCTION_URL}/api/v1/post`,
     withCredentials: true,
   });
 
@@ -67,7 +67,7 @@ function Discover() {
   const [user, setUser] = useState(null);
   const [userId, setUserId] = useState(null);
   const userApi = axios.create({
-    baseURL: "http://localhost:8000/api/v1/users",
+    baseURL: `${import.meta.env.VITE_PRODUCTION_URL}/api/v1/users`,
     withCredentials: true,
   });
 
@@ -130,30 +130,30 @@ function Discover() {
   };
 
   const handleLikeToggle = async (postId, isLiked) => {
-  try {
-    const url = isLiked
-      ? `/${postId}/unlike`
-      : `/${postId}/like`;
+    try {
+      const url = isLiked
+        ? `/${postId}/unlike`
+        : `/${postId}/like`;
 
-    await api.post(url);
+      await api.post(url);
 
-    // Optimistically update the local state
-    setPosts((prev) =>
-      prev.map((post) =>
-        post._id === postId
-          ? {
+      // Optimistically update the local state
+      setPosts((prev) =>
+        prev.map((post) =>
+          post._id === postId
+            ? {
               ...post,
               likes: isLiked
                 ? post.likes.filter((id) => id !== userId)
                 : [...post.likes, userId],
             }
-          : post
-      )
-    );
-  } catch (error) {
-    console.error('Error toggling like:', error);
-  }
-};
+            : post
+        )
+      );
+    } catch (error) {
+      console.error('Error toggling like:', error);
+    }
+  };
 
 
 
