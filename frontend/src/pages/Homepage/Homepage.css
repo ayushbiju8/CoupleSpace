@@ -1,23 +1,23 @@
-/* General Reset */
-html,
+/* html,
 body {
   margin: 0;
   padding: 0;
   height: 100%;
   box-sizing: border-box;
   background-color: var(--body-color);
-}
-
+} */
+/* 
 *,
 *::before,
 *::after {
   box-sizing: inherit;
-}
+} */
 
 .homepage {
   display: flex;
   flex-direction: column;
   height: 100vh;
+  background-color: var(--body-color);
 }
 
 .navigationbarhomepage {
@@ -133,10 +133,11 @@ body {
 .secondcontainerhomepage {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
+  /* gap: 10px; */
   width: 90%;
   max-width: 500px;
   margin: 20px 0px;
+  /* border: 2px solid red; */
   /* Reduced maximum width */
   /* padding: 15px; */
   /* Reduced padding */
@@ -162,7 +163,7 @@ body {
   /* border: 2px solid red; */
 }
 
-.h2O1stC{
+.h2O1stC {
   cursor: pointer;
 }
 
@@ -199,6 +200,7 @@ body {
   justify-content: center;
   align-items: center;
   text-align: center;
+  cursor: pointer;
   /* Center-align text */
 }
 
@@ -211,12 +213,13 @@ a {
 .h2ofcontainerhomepage,
 .h2ofmiddlecontainerhomepage {
   margin-top: 10px;
-  color: white;
+  color: #ffff;
   background-color: var(--navigationbar-color);
   border-radius: 50px;
-  /* padding: 5px 25px;
-  text-align: center; */
+  padding: 5px 50px;
+  text-align: center;
   height: 40px;
+  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -283,6 +286,7 @@ a {
     gap: 5px;
     /* Reduce gap */
     width: 100%;
+
     margin: 20px 0px;
 
   }
@@ -738,7 +742,7 @@ a {
   background-color: white;
   border: 5px solid brown;
   border-radius: 30px;
-  position: absolute;
+  position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -760,6 +764,7 @@ a {
   font-family: 'Courier New', Courier, monospace;
   text-align: center;
 }
+
 .popUpToCreateCoupleSpace>div>input {
   outline: none;
   padding: 10px 10px;
@@ -768,7 +773,8 @@ a {
   color: black;
   width: 60%;
 }
-.popUpToCreateCoupleSpaceItem{
+
+.popUpToCreateCoupleSpaceItem {
   /* border: 2px solid red; */
   width: 80%;
   display: flex;
@@ -789,7 +795,8 @@ a {
   transition: background-color 0.3s, transform 0.2s;
   width: 200px;
 }
-.popUpToCreateCoupleSpace>p{
+
+.popUpToCreateCoupleSpace>p {
   color: gray;
   font-family: 'Courier New', Courier, monospace;
   font-size: small;
@@ -810,7 +817,7 @@ a {
   transform: scale(0.98);
 }
 
-.popUpToCreateCoupleSpaceClose{
+.popUpToCreateCoupleSpaceClose {
   position: absolute;
   /* border: 2px solid red; */
   height: 40px;
@@ -822,12 +829,131 @@ a {
   align-items: center;
   cursor: pointer;
 }
+
 .popUpToCreateCoupleSpaceClose:hover svg path {
-  stroke: black; /* Change the stroke color */
+  stroke: black;
+  /* Change the stroke color */
 }
+
 .popUpToCreateCoupleSpaceClose:hover svg {
-  color: black; /* Change the stroke color */
+  color: black;
+  /* Change the stroke color */
 }
+
+.login-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  /* Slightly lighter overlay for elegance */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.login-popup {
+  background: linear-gradient(135deg, #fff0f5, #ffe5ec);
+  color: #4a2c2a;
+  padding: 30px;
+  border-radius: 24px;
+  width: 380px;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 8px 30px rgba(255, 105, 180, 0.3);
+  font-family: 'Quicksand', sans-serif;
+}
+
+/* Shared button styles */
+.login-popup button {
+  margin-top: 10px;
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+/* Google button */
+.google-btn {
+  background-color: #ffffff;
+  color: #5b3a29;
+  border: 1px solid #ffb6c1;
+}
+
+.google-btn:hover {
+  background-color: #ffe0eb;
+}
+
+/* Apple button */
+.apple-btn {
+  background-color: #ffffff;
+  color: #3a2f2f;
+  border: 1px solid #ffb6c1;
+}
+
+.apple-btn:hover {
+  background-color: #ffe0eb;
+}
+
+/* Next button */
+.next-btn {
+  background-color: #ff69b4;
+  color: white;
+  box-shadow: 0 4px 10px rgba(255, 105, 180, 0.3);
+}
+
+.next-btn:hover {
+  background-color: #ff85c1;
+}
+
+/* Forgot password */
+.forgot-btn {
+  background: none;
+  color: #b23a48;
+  border: none;
+  font-weight: 500;
+}
+
+.forgot-btn:hover {
+  text-decoration: underline;
+}
+
+/* Signup link */
+.signup-link {
+  color: #c94c74;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.signup-link:hover {
+  text-decoration: underline;
+}
+
+/* Close Button */
+.close-btn {
+  position: absolute;
+  top: -10px;
+  right: -160px;
+  font-size: 26px;
+  background: transparent;
+  color: #b23a48;
+  cursor: pointer;
+  font-weight: bold;
+  transition: transform 0.2s ease;
+}
+
+.close-btn:hover {
+  transform: scale(1.2);
+  color: #000;
+}
+
+
 
 @media screen and (max-width:510px) {
   .popUpToCreateCoupleSpace {
@@ -836,14 +962,14 @@ a {
   }
 }
 
-.hiddenCSPopUp{
+.hiddenCSPopUp {
   display: none;
 }
 
 
 
 
-.aligningatcenter{
+.aligningatcenter {
   width: 100%;
   /* background-color: #ff68b9; */
 }

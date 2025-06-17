@@ -52,4 +52,7 @@ app.use("/api/v1/couples", coupleRouter)
 import chatRouter from "./routes/chat.routes.js"
 app.use("/api/v1/chat", chatRouter)
 
+import postRouter from "./routes/post.routes.js"
+app.use("/api/v1/post",postRouter)
+
 export { app, server }

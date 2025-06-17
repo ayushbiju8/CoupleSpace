@@ -32,7 +32,13 @@ const createCoupleSpace = AsyncHandler(async (req, res) => {
 
     // Check if the existing couple space has a partnerTwo. If it does, prevent the user from creating another couple space.
     if (existingCoupleSpace && existingCoupleSpace.partnerTwo) {
-        throw new ApiError(400, "User already belongs to a complete couple space");
+        throw new ApiError(403, "User already belongs to a complete couple space");
+    }
+
+    const partnerTwoUser = await User.findOne({ email: partnerTwoEmail });
+
+    if (partnerTwoUser && partnerTwoUser.coupleId) {
+        throw new ApiError(403, "The invited partner is already in a couple space");
     }
 
 
@@ -699,7 +705,7 @@ const deleteRoadMap = AsyncHandler(async (req, res) => {
 
     // Convert roadmapId to string for comparison
     const roadmapExists = couple.roadmap.some(id => id.toString() === roadmapId.toString());
-    
+
     if (!roadmapExists) {
         throw new ApiError(403, "Unauthorized to delete this roadmap");
     }

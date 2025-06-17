@@ -1,13 +1,13 @@
 :root {
     --primary-clr: #b38add;
   }
-  * {
+  /* * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     font-family: "Poppins", sans-serif;
   }
- 
+  */
   .calendar-container{
     position: relative;
     min-height: 100vh;

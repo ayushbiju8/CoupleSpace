@@ -1,0 +1,212 @@
+/* body {
+  margin: 0;
+  font-family: 'Arial', sans-serif;
+  background-color: #fff5f7;    
+} */
+
+.profile-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  text-align: center;
+  font-family: Arial, sans-serif;
+}
+
+.profile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: bold;
+  color: #d63384;
+}
+
+.nav-links a {
+  margin-left: 20px;
+  text-decoration: none;
+  color: #d63384;
+  font-weight: bold;
+}
+
+.nav-links a:hover {
+  text-decoration: underline;
+}
+
+.profile-card {
+  background-color: #ffffff;
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.profile-picture-wrapper {
+  margin: 0 auto;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid #d63384;
+}
+
+.profile-picture {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-name {
+  font-size: 24px;
+  font-weight: bold;
+  margin: 10px 0;
+  color: #333;
+}
+
+.profile-username {
+  font-size: 16px;
+  color: #888;
+  margin-bottom: 10px;
+}
+
+.profile-age-location {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 20px;
+}
+
+.edit-button {
+  padding: 10px 20px;
+  background-color: #d63384;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.edit-button:hover {
+  background-color: #b82c6e;
+}
+
+.profile-bio {
+  margin-top: 20px;
+  text-align: left;
+}
+
+.profile-bio h3 {
+  font-size: 18px;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.profile-bio p {
+  font-size: 14px;
+  color: #555;
+}
+
+.profile-interests {
+  margin-top: 20px;
+  text-align: left;
+}
+
+.profile-interests h3 {
+  font-size: 18px;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.interests-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.interest-tag {
+  background-color: #ffe0ec;
+  color: #d63384;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+}
+
+.remove-interest-button {
+  background: none;
+  border: none;
+  color: #d63384;
+  font-size: 14px;
+  margin-left: 5px;
+  cursor: pointer;
+}
+
+.remove-interest-button:hover {
+  color: #b82c6e;
+}
+
+.add-interest-button {
+  margin-top: 10px;
+  padding: 5px 10px;
+  background-color: #d63384;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.add-interest-button:hover {
+  background-color: #b82c6e;
+}
+
+.upload-input {
+  width:90px;
+  margin-top: 50px;
+}
+
+.edit-input,
+.edit-textarea {
+  width: 100%;
+  margin: 10px 0;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.edit-textarea {
+  resize: none;
+  height: 80px;
+}
+
+.save-button,
+.cancel-button {
+  padding: 10px 20px;
+  margin: 5px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.save-button {
+  background-color: #d63384;
+  color: white;
+}
+
+.save-button:hover {
+  background-color: #b82c6e;
+}
+
+.cancel-button {
+  background-color: #d63384;
+  color: white;
+}
+
+.cancel-button:hover {
+  background-color: #b82c6e;
+}

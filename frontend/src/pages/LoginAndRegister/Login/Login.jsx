@@ -3,7 +3,7 @@ import "./Login.css";
 import axios from "axios"
 import { useNavigate } from 'react-router-dom';
 import socket from '../../../utilities/socket';
-
+import Logo from '../../../assets/Logo/Logo.png'
 
 
 function Login() {
@@ -57,23 +57,42 @@ function Login() {
             clearAll();
             setLoginMessage("Login")
             navigate("/")
-        } catch (error) {
-            setLoginMessage("Login")
-            if (error.response && error.response.data) {
-                setError(error.response.data.message || 'An error occurred.');
+                } catch (error) {
+            setLoginMessage("Login");
+
+            if (error.response) {
+                const status = error.response.status;
+                const serverMessage = error.response.data?.message;
+
+                if (status === 404) {
+                    setError(serverMessage || "User not found.");
+                } else if (status === 401) {
+                    setError(serverMessage || "Invalid password.");
+                } else if (status === 400) {
+                    setError(serverMessage || "Invalid request.");
+                } else {
+                    setError(serverMessage || "Something went wrong. Please try again.");
+                }
             } else {
-                setError('Unable to Login. Please try again later.');
+                setError('Unable to connect to the server. Please try again later.');
             }
         }
+
     }
 
 
     return (
         <div className='LoginPage'>
             <div className="LoginLeftImagePart">
-                {/* Add a background image or other content here if needed */}
+                <div className="w-full h-full flex justify-center items-center">
+                    <img src={Logo} alt="" className='-rotate-10'/>
+
+                </div>
             </div>
-            <div className="LoginRightImagePart">
+            <div className="LoginRightImagePart relative">
+                <div className="absolute top-20 left-1/2 -translate-x-1/2 md:hidden">
+                    <img src={Logo} alt="" className='w-50'/>
+                </div>
                 <div className="LoginRightImagePartHeading">
                     <h2>Login</h2>
                 </div>

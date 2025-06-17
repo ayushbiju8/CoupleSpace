@@ -18,6 +18,8 @@ import TruthOrDare from './pages/Games/TruthOrDare/TruthOrDare';
 import Funquests from './pages/Funquests/Funquests';
 import Gifts from './pages/Gifts/Gifts';
 import Roadmap from './pages/Roadmap/Roadmap';
+import Profile from './pages/Profile/Profile';
+import Discover from './pages/Discover/Discover';
 
 
 
@@ -97,6 +99,14 @@ const router = createBrowserRouter([
   {
     path: '/gifts',
     element: <Gifts/>
+  },
+  {
+    path: '/profile',
+    element: <Profile/>
+  },
+  {
+    path: '/discover',
+    element: <Discover/>
   },
 
 ])

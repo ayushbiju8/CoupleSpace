@@ -310,6 +310,7 @@ import SvgWithDots from '../../components/SvgWithDots';
 import TopPart from '../../utilities/TopPart/TopPart';
 import gsap from 'gsap';
 import axios from "axios";
+import Loader from '../../utilities/Loader';
 
 
 
@@ -486,11 +487,16 @@ function Roadmap() {
       setImagePreview(URL.createObjectURL(file)); // Show preview
     }
   };
+    const handleTopPartLoaded = () => {
+    setLoading(false);
+  };
 
 
-  return (
+  return loading ? (
+    <Loader/>
+  ) :(
     <div className="w-full h-screen">
-      <TopPart />
+      <TopPart onLoaded={handleTopPartLoaded} />
       <div className='w-full h-auto'>
         <div ref={svgContainer} className="svgContainer flex flex-col items-center">
           {/* <SvgWithDots positions={[0.2, 0.5, 0.75]} />          

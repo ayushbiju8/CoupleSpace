@@ -1,10 +1,10 @@
 /* Main container styles */
-body {
-    /* background-color: #fff5f7; */
+/* body {
+    background-color: #fff5f7;
     font-family: "Arial", sans-serif;
     margin: 0;
     padding: 0;
-}
+} */
 
 .WYRgame-container {
     display: flex;

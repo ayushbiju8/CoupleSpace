@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import './Homepage.css';
@@ -11,6 +12,8 @@ import gift from '../../assets/homepage/gift.jpg';
 import axios from "axios"
 import { useNavigate } from 'react-router-dom'
 import socket from '../../utilities/socket';
+import profile from '../../assets/homepage/profile.jpg'; // or .png depending on your file
+
 
 function Homepage() {
 
@@ -44,7 +47,7 @@ function Homepage() {
         console.error("An unexpected error occurred:", error);
       }
     }
-};
+  };
 
   useEffect(() => {
     getHomepageDetails();
@@ -166,8 +169,8 @@ function Homepage() {
       }
 
       const formData = new FormData();
-      formData.append('coupleName',coupleSpaceName)
-      formData.append('partnerTwoEmail',inviationEmail)
+      formData.append('coupleName', coupleSpaceName)
+      formData.append('partnerTwoEmail', inviationEmail)
 
       const response = await axios.post(
         `${import.meta.env.VITE_PRODUCTION_URL}/api/v1/couples/create-couple-space`, formData, {
@@ -182,13 +185,50 @@ function Homepage() {
 
       viewCoupleSpacePopUp()
     } catch (error) {
-      if (error.response && error.response.data) {
-        setError(error.response.data.message || 'An error occurred.');
-    } else {
-        setError('Unable to Create. Please try again later.');
-    }
+      console.log(error.response.status)
+      if(error.response.status==403){
+        setCSError('User already in Couple Space.');
+      }else if (error.response && error.response.data) {
+        setCSError(error.response.data.message || 'An error occurred.');
+      }else {
+        setCSError('Unable to Create. Please try again later.');
+      }
     }
   }
+  const [showLoginPopup, setShowLoginPopup] = useState(false);
+
+  const handleProtectedClick = (e, path) => {
+    if (!isLoggedIn) {
+      e.preventDefault();
+      setShowLoginPopup(true);
+      return
+    }
+    if(!response?.haveCoupleSpace&&(path=='/chat'||path=='/calendar')){
+      viewCoupleSpacePopUp();
+    }else {
+      navigate(path);
+    }
+  };
+
+  const closeLoginPopup = () => {
+    setShowLoginPopup(false);
+  };
+
+  const LoginPopup = () => (
+    <div className="login-popup-overlay">
+      <div className="login-popup">
+        <button className="close-btn" onClick={closeLoginPopup}>×</button>
+        <h2>Sign in to Couple Space</h2>
+        <button onClick={() => navigate('/login')} className="google-btn">Sign in with Google</button>
+        <button onClick={() => navigate('/login')} className="apple-btn">Sign in with Apple</button>
+        <p>or</p>
+        <input type="text" placeholder="Phone, email, or username" disabled />
+        <button onClick={() => navigate('/login')} className="next-btn">Next</button>
+        <button className="forgot-btn" onClick={() => navigate('/forgot-password')}>Forgot password?</button>
+        <p>Don’t have an account? <span onClick={() => navigate('/register')} className="signup-link">Sign up</span></p>
+      </div>
+    </div>
+  );
 
 
 
@@ -243,7 +283,7 @@ function Homepage() {
 
       </div>
       <div className="bannerhomepage">
-        <Link to="/couple-space">
+        <Link to="/discover">
           <img src={couplebanner} alt="Couplebanner" className="couplebanner" />
         </Link>
       </div>
@@ -262,44 +302,54 @@ function Homepage() {
           </div>
         </div>
         <div className="secondcontainerhomepage">
-          <div className="alignatcenter">
-            <Link to="/calendar">
-              <img src={calender} alt="Calendar" className="grid-item-image" />
-              <h2 className="h2ofmiddlecontainerhomepage">Calendar</h2>
-            </Link>
+          <div
+            className="alignatcenter"
+            onClick={(e) => handleProtectedClick(e, "/calendar")}
+          >
+            <img src={calender} alt="Calendar" className="grid-item-image"  />
+            <h2 className="h2ofmiddlecontainerhomepage">Calendar</h2>
           </div>
-          <div className="alignatcenter">
-            <Link to="/gifts">
-              <img src={gift} alt="Gift" className="grid-item-image" />
-              <h2 className="h2ofmiddlecontainerhomepage">Gift</h2>
-            </Link>
+
+          <div
+            className="alignatcenter"
+            onClick={(e) => handleProtectedClick(e, "/gifts")}
+          >
+            <img src={gift} alt="Gift" className="grid-item-image" />
+            <h2 className="h2ofmiddlecontainerhomepage">Gifts</h2>
           </div>
-          <div className="alignatcenter">
-            <Link to="/chat">
-              <img src={chat} alt="Chat" className="grid-item-image" />
-              <h2 className="h2ofmiddlecontainerhomepage">Chat</h2>
-            </Link>
+
+          <div
+            className="alignatcenter"
+            onClick={(e) => handleProtectedClick(e, "/chat")}
+          >
+            <img src={chat} alt="Chat" className="grid-item-image" />
+            <h2 className="h2ofmiddlecontainerhomepage">Chat</h2>
           </div>
-          <div className="alignatcenter">
-            <Link to="/couple-space">
-              <img src={profileImage ? profileImage : defaultProfilePic} alt="Profile" className="grid-item-image" />
-              <h2 className="h2ofmiddlecontainerhomepage">Profile</h2>
-            </Link>
+          <div
+            className="alignatcenter"
+            onClick={(e) => handleProtectedClick(e, "/profile")}
+          >
+            <img src={profile} alt="Discover" className="grid-item-image" />
+            <h2 className="h2ofmiddlecontainerhomepage">Profile</h2>
           </div>
+
+
         </div>
 
-        <div className="thirdcontainerhomepage">
-          <div className="aligningatcenter">
-            <Link to="/couple-space">
-              <img
-                src={discover}
-                alt="Discover"
-                className="thirdcontainerimage"
-              />
-              <h2 className="h2ofcontainerhomepage">Discover</h2>
-            </Link>
-          </div>
-        </div>
+       <div className="thirdcontainerhomepage">
+  <div
+    className="aligningatcenter"
+    onClick={(e) => handleProtectedClick(e, "/discover")}
+  >
+    <img
+      src={discover}
+      alt="Discover"
+      className="thirdcontainerimage"
+    />
+    <h2 className="h2ofcontainerhomepage">Discover</h2>
+  </div>
+</div>
+
       </div>
       <div className="popUpToCreateCoupleSpace hiddenCSPopUp" >
         <h2>Create Your Couple Space</h2>
@@ -337,8 +387,12 @@ function Homepage() {
         </svg>
         </div>
       </div>
+      {showLoginPopup && <LoginPopup />}
+
     </div>
+
   );
+
 }
 
 export default Homepage;

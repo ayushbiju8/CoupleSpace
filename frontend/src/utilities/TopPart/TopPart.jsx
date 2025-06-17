@@ -1,40 +1,32 @@
-import React,{useState,useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
 import ProfileImage from "../../assets/DefaultProfilePicture.jpg"
 import './TopPart.css'
 import axios from 'axios'
-function TopPart() {
+function TopPart({ onLoaded }) {
     const [partnerOneName, setPartnerOneName] = useState("Ayush")
     const [partnerTwoName, setPartnerTwoName] = useState("Merin")
     const [profileUrl, setProfileUrl] = useState("")
-    const [responseFetched, setResponseFetched] = useState("")
-    const [loading, setLoading] = useState(true);
     const getCoupleSpace = async () => {
         try {
-            setLoading(true);
             const response = await axios.get(
                 `${import.meta.env.VITE_PRODUCTION_URL}/api/v1/couples/couple-space`, {
                 withCredentials: true,
-            });
-            setResponseFetched(response.data.data);
-            console.log(response.data.data);
-            setProfileUrl(response.data.data.coverPhoto);
-            const name1 = response.data.data.partnerOneName.split(" ");
-            console.log(name1[0]);
-            setPartnerOneName(name1[0]);
-            const name2 = response.data.data.partnerTwoName.split(" ");
-            console.log(name2[0]);
-            console.log("Name " + response.data.data.partnerTwoName);
-            setPartnerTwoName(name2[0]);
+            }
+            );
+            const data = response.data.data;
+            setProfileUrl(data.coverPhoto);
+            setPartnerOneName(data.partnerOneName.split(" ")[0]);
+            setPartnerTwoName(data.partnerTwoName.split(" ")[0]);
         } catch (error) {
             console.error("Error fetching couple space data:", error);
         } finally {
-            setLoading(false);
+            onLoaded(); // ✅ Notify parent that loading is done
         }
     };
-    useEffect(()=>{
-        getCoupleSpace()
-    },[])
 
+    useEffect(() => {
+        getCoupleSpace();
+    }, []);
     return (
         <div className="TopImageContainerForCoupleSpace">
 

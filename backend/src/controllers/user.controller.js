@@ -296,5 +296,93 @@ const getUserHomePage = AsyncHandler( async (req,res) => {
 });
 
 
+const editUserProfile = async (req, res) => {
+  try {
+    const userId = req.user._id; // Auth middleware should set req.user
 
-export {registerUser,loginUser,logoutUser,refreshAccessToken,getCurrentUser,getUserHomePage}
+    // Destructure from body
+    const {
+      fullName,
+      userName,
+      dob,
+      location,
+      bio,
+      interests,
+    } = req.body;
+
+    let profilePicture;
+
+    // Handle profile picture upload if present
+    if (req.files && Array.isArray(req.files.profilePicture) && req.files.profilePicture.length > 0) {
+      const profilePictureLocalPath = req.files.profilePicture[0].path;
+      try {
+        const uploadResult = await uploadOnCloudinary(profilePictureLocalPath);
+        profilePicture = uploadResult.url; // assuming uploadOnCloudinary returns { url: ... }
+      } catch (err) {
+        return res.status(500).json({
+          success: false,
+          message: "Error uploading profile picture",
+        });
+      }
+    }
+
+    const updateData = {
+      ...(fullName && { fullName }),
+      ...(userName && { userName }),
+      ...(dob && { dob }),
+      ...(location && { location }),
+      ...(bio && { bio }),
+      ...(interests && { interests }),
+      ...(profilePicture && { profilePicture }),
+    };
+
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      updateData,
+      { new: true }
+    ).select("-password -refreshToken");
+
+    res.status(200).json({
+      success: true,
+      message: "Profile updated successfully",
+      user: updatedUser,
+    });
+  } catch (error) {
+    console.error("Edit profile error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to update profile",
+    });
+  }
+};
+
+const getUserProfile = async (req, res) => {
+  try {
+    const userId = req.user._id; // Set by auth middleware
+
+    const user = await User.findById(userId).select(
+      "-password -refreshToken"
+    );
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      user,
+    });
+  } catch (error) {
+    console.error("Get profile error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch profile",
+    });
+  }
+};
+
+
+export {registerUser,loginUser,logoutUser,refreshAccessToken,getCurrentUser,getUserHomePage,editUserProfile,getUserProfile}

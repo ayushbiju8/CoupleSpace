@@ -3,6 +3,7 @@ import "./Register.css";
 import DefaultProfilePicture from "../../../assets/DefaultProfilePicture.jpg";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Logo from '../../../assets/Logo/Logo.png'
 
 function Register() {
     const navigate = useNavigate();
@@ -83,7 +84,7 @@ function Register() {
                     'Content-Type': 'multipart/form-data',
                 },
                 withCredentials: true,
-            });             
+            });
             console.log(response.data);
             clearAll();
             navigate("/login")
@@ -100,11 +101,14 @@ function Register() {
     return (
         <div className='RegisterPage'>
             <div className="RegisterLeftImagePart">
-                {/* You can add a background image or any other content here */}
+                <div className="w-full h-full flex justify-center items-center">
+                    <img src={Logo} alt="" className='-rotate-10' />
+
+                </div>
             </div>
             <div className="RegisterRightImagePart">
                 <div className="RegisterRightImagePartHeading">
-                    <h2>Registration</h2>
+                    <h2>Register Now</h2>
                 </div>
                 <div className="RegisterFromContents">
                     <div className="RegistrationImageUploadContainer">

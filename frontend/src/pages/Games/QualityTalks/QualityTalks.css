@@ -1,12 +1,12 @@
 /* Main styles */
-body {
+/* body {
     background-color: #ffe1e1;
     font-family: 'Arial', sans-serif;
     color: #5f5f5f;
     margin: 0;
     padding: 0;
     height: 100vh;
-}
+} */
 
 .QTquiz-container {
     display: flex;
