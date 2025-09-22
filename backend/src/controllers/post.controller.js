@@ -6,32 +6,32 @@ import { uploadOnCloudinary } from "../utils/Cloudinary.js";
 
 
 
-const postAPost = AsyncHandler(async (req,res)=>{
+const postAPost = AsyncHandler(async (req, res) => {
     const userId = req.user?._id;
-    if(!userId){
-        throw new ApiError(401,"Unauthorized Access");
+    if (!userId) {
+        throw new ApiError(401, "Unauthorized Access");
     }
-    const {heading,content} = req.body
-    if(!heading){
-        throw new ApiError(400,"Heading Required");
+    const { heading, content } = req.body
+    if (!heading) {
+        throw new ApiError(400, "Heading Required");
     }
-    
-    const imagePath  = req.files?.image?.[0]?.path;
-    let image=null
-    if(imagePath){
+
+    const imagePath = req.files?.image?.[0]?.path;
+    let image = null
+    if (imagePath) {
         image = await uploadOnCloudinary(imagePath);
     }
-    const post=await Post.create({
-        user:userId,
+    const post = await Post.create({
+        user: userId,
         heading,
         content: content || null,
-        image: image? image.url : ""
+        image: image ? image.url : ""
     })
-    if (!post){
-            throw new ApiError(500,"Some Problem With Creating Post")
+    if (!post) {
+        throw new ApiError(500, "Some Problem With Creating Post")
     }
     return res.status(200).json(
-        new ApiResponse(200,post,"Post Created Succesfully")
+        new ApiResponse(200, post, "Post Created Succesfully")
     )
 })
 const getAllPosts = AsyncHandler(async (req, res) => {
@@ -43,12 +43,31 @@ const getAllPosts = AsyncHandler(async (req, res) => {
         .status(200)
         .json(new ApiResponse(200, posts, "Posts fetched successfully"));
 });
+
+const getMyPosts = AsyncHandler(async (req, res) => {
+    const userId = req.user?._id;
+
+    if (!userId) {
+        throw new ApiError(401, "Unauthorized Access");
+    }
+
+    const posts = await Post.find({ user: userId })
+        .populate("user", "fullName userName _id profilePicture")
+        .sort({ createdAt: -1 });
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, posts, "User's posts fetched successfully"));
+});
+
+
 const getPostById = AsyncHandler(async (req, res) => {
     const { postId } = req.params;
 
     const post = await Post.findById(postId)
-        .populate("user", "name _id")
-        .populate("comments.user", "name _id");
+        .populate("user", "fullName userName _id profilePicture")
+        .populate("comments.user", "fullName userName _id profilePicture");
+
 
     if (!post) {
         throw new ApiError(404, "Post not found");
@@ -185,5 +204,6 @@ export {
     likePost,
     unlikePost,
     addComment,
-    deleteComment
+    deleteComment,
+    getMyPosts
 };
