@@ -11,13 +11,16 @@ const server = http.createServer(app);
 
 
 const allowedOrigins = [
-  process.env.FRONTEND_URL_LOCAL, // e.g., "http://localhost:5173"
-  process.env.FRONTEND_URL_PROD   // e.g., "https://couplespace.in"
+  "https://couplespace.in",               // Web frontend (production)
+  "http://localhost:19000",               // Expo local dev
+  "http://192.168.1.5:19000",             // LAN dev (change based on your machine IP)
+  "exp://*",                              // Expo Go app (wildcard)
+  "expo://*",                             // Expo standalone builds
 ];
 
 const io = new Server(server, {
   cors: {
-    origin: "https://couplespace.in",  // 👈 Allow ONLY your frontend
+    origin: allowedOrigins,
     methods: ["GET", "POST"],
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"],
