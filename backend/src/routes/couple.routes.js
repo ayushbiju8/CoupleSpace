@@ -1,9 +1,10 @@
 import { Router } from "express";
 import { upload } from "../middlewares/multer.middleware.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
-import { createCoupleSpace ,
-    acceptInvitation ,
-    getCoupleSpace ,
+import {
+    createCoupleSpace,
+    acceptInvitation,
+    getCoupleSpace,
     setOrUpdateCoupleProfile,
     addBucketList,
     getBucketlist,
@@ -18,7 +19,8 @@ import { createCoupleSpace ,
     addRoadMap,
     getRoadMap,
     updateRoadMap,
-    deleteRoadMap
+    deleteRoadMap,
+    deleteCoupleSpace
 } from "../controllers/couple.controller.js"
 import { Achievement } from "../models/couple.models.js";
 import { Couple } from "../models/couple.models.js";
@@ -31,11 +33,16 @@ router.route("/create-couple-space").post(
     verifyJWT,
     upload.fields([
         {
-            name : "coverPhoto",
-            maxCount : 1
+            name: "coverPhoto",
+            maxCount: 1
         }
     ]),
     createCoupleSpace
+)
+
+router.route("/delete-couple-space").post(
+    verifyJWT,
+    deleteCoupleSpace
 )
 
 router.route("/accept-invite").post(
@@ -51,8 +58,8 @@ router.route("/update-coverphoto").post(
     verifyJWT,
     upload.fields([
         {
-            name : "coverPhoto",
-            maxCount : 1
+            name: "coverPhoto",
+            maxCount: 1
         }
     ]),
     setOrUpdateCoupleProfile
@@ -145,8 +152,8 @@ router.route("/uploadmemory").post(
     verifyJWT,
     upload.fields([
         {
-            name : "memoryPhoto",
-            maxCount : 1
+            name: "memoryPhoto",
+            maxCount: 1
         }
     ]),
     uploadMemory
@@ -161,7 +168,7 @@ router.route("/addroadmap").post(
     upload.fields([
         {
             name: "image",
-            maxCount : 1,
+            maxCount: 1,
         }
     ]),
     addRoadMap
@@ -175,7 +182,7 @@ router.route("/updateRoadmap").put(
     upload.fields([
         {
             name: "image",
-            maxCount : 1,
+            maxCount: 1,
         }
     ]),
     updateRoadMap

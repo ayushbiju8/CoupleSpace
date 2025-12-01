@@ -31,8 +31,8 @@ const createCoupleSpace = AsyncHandler(async (req, res) => {
     });
 
     // Check if the existing couple space has a partnerTwo. If it does, prevent the user from creating another couple space.
-    if (existingCoupleSpace && existingCoupleSpace.partnerTwo) {
-        throw new ApiError(403, "User already belongs to a complete couple space");
+    if (existingCoupleSpace) {
+        throw new ApiError(403, "User already belongs to a couple space (Pending or Complete)");
     }
 
     const partnerTwoUser = await User.findOne({ email: partnerTwoEmail });
@@ -208,36 +208,32 @@ const getCoupleSpace = AsyncHandler(async (req, res) => {
 });
 
 const setOrUpdateCoupleProfile = AsyncHandler(async (req, res) => {
-    try {
-        const userId = req.user._id;
-        const coverPhotoLocalPath = req.files?.coverPhoto[0]?.path;
-        console.log(coverPhotoLocalPath);
-        if (!coverPhotoLocalPath) {
-            throw new ApiError(404, "Photo is Required")
-        }
-        console.log(coverPhotoLocalPath);
-        const coverPhoto = await uploadOnCloudinary(coverPhotoLocalPath)
-
-        if (!coverPhoto.url) {
-            throw new ApiError(500, "Error while uploading Cover Photo")
-        }
-
-        // console.log(coverPhoto.url);
-        // console.log(userId);
-        const couple = await Couple.findOneAndUpdate(
-            { $or: [{ partnerOne: userId }, { partnerTwo: userId }] },
-            {
-                $set: { coverPhoto: coverPhoto.url }
-            },
-            { new: true }
-        );
-        // console.log(couple);
-        return res.status(200).json(
-            new ApiResponse(400, couple, "Photo Updated Succesfully")
-        )
-    } catch (error) {
-        throw new ApiError(400, "Some error Occured")
+    const userId = req.user._id;
+    const coverPhotoLocalPath = req.files?.coverPhoto[0]?.path;
+    console.log(coverPhotoLocalPath);
+    if (!coverPhotoLocalPath) {
+        throw new ApiError(404, "Photo is Required")
     }
+    console.log(coverPhotoLocalPath);
+    const coverPhoto = await uploadOnCloudinary(coverPhotoLocalPath)
+
+    if (!coverPhoto.url) {
+        throw new ApiError(500, "Error while uploading Cover Photo")
+    }
+
+    // console.log(coverPhoto.url);
+    // console.log(userId);
+    const couple = await Couple.findOneAndUpdate(
+        { $or: [{ partnerOne: userId }, { partnerTwo: userId }] },
+        {
+            $set: { coverPhoto: coverPhoto.url }
+        },
+        { new: true }
+    );
+    // console.log(couple);
+    return res.status(200).json(
+        new ApiResponse(200, couple, "Photo Updated Succesfully")
+    )
 
 })
 
@@ -780,8 +776,41 @@ const updateRoadMap = AsyncHandler(async (req, res) => {
 
 
 
+const deleteCoupleSpace = AsyncHandler(async (req, res) => {
+    const userId = req.user._id;
+
+    if (!userId) {
+        throw new ApiError(401, "Unauthorized Access");
+    }
+
+    const couple = await Couple.findOne({
+        $or: [{ partnerOne: userId }, { partnerTwo: userId }],
+    });
+
+    if (!couple) {
+        throw new ApiError(404, "Couple Space Not Found");
+    }
+
+    // Check if it's a complete couple space (has partnerTwo)
+    if (couple.partnerTwo) {
+        throw new ApiError(403, "Cannot delete a complete couple space. This feature is for pending invites only.");
+    }
+
+    // If it's a pending couple space (partnerTwo is null), allow deletion
+    await Couple.findByIdAndDelete(couple._id);
+
+    // Update the user's coupleId to null
+    await User.findByIdAndUpdate(userId, { coupleId: null });
+
+    return res.status(200).json(
+        new ApiResponse(200, {}, "Pending Couple Space Deleted Successfully")
+    );
+});
+
+
 export {
     createCoupleSpace,
+    deleteCoupleSpace,
     acceptInvitation,
     getCoupleSpace,
     setOrUpdateCoupleProfile,

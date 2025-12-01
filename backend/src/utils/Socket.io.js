@@ -11,16 +11,13 @@ const server = http.createServer(app);
 
 
 const allowedOrigins = [
-  "https://couplespace.in",               // Web frontend (production)
-  "http://localhost:19000",               // Expo local dev
-  "http://192.168.1.5:19000",             // LAN dev (change based on your machine IP)
-  "exp://*",                              // Expo Go app (wildcard)
-  "expo://*",                             // Expo standalone builds
+  process.env.FRONTEND_URL_LOCAL, // e.g., "http://localhost:5173"
+  process.env.FRONTEND_URL_PROD   // e.g., "https://couplespace.in"
 ];
 
 const io = new Server(server, {
   cors: {
-    origin: allowedOrigins,
+    origin: "*",
     methods: ["GET", "POST"],
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -36,13 +33,14 @@ io.use(verifyJWTForSocket);
 
 io.on("connection", (socket) => {
 
-  console.log("A user connected:", socket.user?.userName); 
+  console.log("A user connected:", socket.user?.userName);
 
   const socketId = socket.user?.coupleId?.toString()
   socket.join(socketId)
   console.log(socket.rooms);
+  io.to(socketId).emit("joined", socketId);
 
-  socket.on("send",async (data)=>{
+  socket.on("send", async (data) => {
     // console.log(`Received Message : ${data}`);
     // console.log(socket.user?.partner);
     // console.log(socket.user?._id);
@@ -52,10 +50,10 @@ io.on("connection", (socket) => {
       text: data?.text,
       image: data?.image || null
     })
-    if(!newMessage){
+    if (!newMessage) {
       console.log("failed to create new message");
     }
-    io.to(socketId).emit("sendBack",newMessage)
+    io.to(socketId).emit("sendBack", newMessage)
   })
 
   socket.on("disconnect", () => {
