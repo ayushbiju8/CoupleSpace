@@ -1,63 +1,75 @@
 import jwt from "jsonwebtoken";
 import { User } from "../models/user.models.js";
-import { Couple } from "../models/couple.models.js"; // Import Couple model
+import { Couple } from "../models/couple.models.js";
 import ApiError from "../utils/ApiError.js";
 
 const verifyJWTForSocket = async (socket, next) => {
   try {
-    const token =
-      socket.handshake.headers.cookie
-        ?.split("; ")
-        .find(cookie => cookie.startsWith("accessToken="))
-        ?.split("=")[1] || socket.handshake.auth?.token;
+    // 1) Try cookie: accessToken=<token>
+    const cookieToken = socket.handshake.headers?.cookie
+      ?.split("; ")
+      .find((c) => c.startsWith("accessToken="))
+      ?.split("=")[1];
+
+    // 2) Try auth (client-side io({ auth: { token } }))
+    const authToken = socket.handshake.auth?.token;
+
+    // 3) Try Authorization header (extraHeaders: { Authorization: `Bearer ${token}` })
+    const authHeader = socket.handshake.headers?.authorization;
+    const headerToken = authHeader ? authHeader.split(" ")[1] : null;
+
+    const token = cookieToken || authToken || headerToken;
+
+    console.log("socket auth sources -> cookie:", !!cookieToken, "auth:", !!authToken, "header:", !!headerToken);
 
     if (!token) {
-      return next(new ApiError(401, "Unauthorized Request (No Token Provided)"));
+      return next(new ApiError(401, "Unauthorized: no token provided"));
     }
 
-    const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    let decodedToken;
+    try {
+      decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    } catch (err) {
+      console.error("JWT verify failed:", err);
+      return next(new ApiError(401, "Unauthorized: invalid or expired token"));
+    }
 
-    if (!decodedToken) {
-      return next(new ApiError(401, "Unauthorized Request (Error while decoding)"));
+    if (!decodedToken || !decodedToken._id) {
+      return next(new ApiError(401, "Unauthorized: invalid token payload"));
     }
 
     const user = await User.findById(decodedToken._id).select("-password -refreshToken");
-
     if (!user) {
-      return next(new ApiError(401, "Invalid Access Token"));
+      return next(new ApiError(401, "Unauthorized: user not found"));
     }
 
-    // Fetch couple details based on the user
+    // Find couple that includes this user
     const coupleSpace = await Couple.findOne({
       $or: [{ partnerOne: user._id }, { partnerTwo: user._id }],
     });
 
     if (!coupleSpace) {
-      return next(new ApiError(404, "Couple not found"));
+      return next(new ApiError(404, "Couple not found for this user"));
     }
 
-    // Determine the other partner's ID
+    // Determine partner id and fetch partner
     const otherPartnerId =
       coupleSpace.partnerOne.toString() === user._id.toString()
         ? coupleSpace.partnerTwo
         : coupleSpace.partnerOne;
 
-    // Fetch the partner's details (e.g., name, profile picture)
-    const partner = await User.findById(otherPartnerId).select(
-      "-password -refreshToken"
-    );
-
+    const partner = await User.findById(otherPartnerId).select("-password -refreshToken");
     if (!partner) {
       return next(new ApiError(404, "Partner not found"));
     }
 
-    // Add user and partner details to socket object
+    // Attach user + partner to socket
     socket.user = { ...user.toObject(), partner };
 
-    next();
+    return next();
   } catch (error) {
-    console.error("JWT Verification Error:", error); // Log error message
-    return next(new ApiError(400, `Error Verifying JWT: ${error.message}`));
+    console.error("verifyJWTForSocket unexpected error:", error);
+    return next(new ApiError(500, `Socket auth error: ${error.message}`));
   }
 };
 
